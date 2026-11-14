@@ -1,10 +1,12 @@
 import logging
 import uuid
 from contextlib import asynccontextmanager
+from pathlib import Path
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import FileResponse, JSONResponse
+from fastapi.staticfiles import StaticFiles
 from sqlalchemy import select, text
 from sqlalchemy.dialects.postgresql import insert as pg_insert
 
@@ -19,6 +21,7 @@ from app.seed import seed_database, seed_advanced_data
 
 logger = logging.getLogger("neroute.api")
 DEFAULT_JWT_SECRET = "replace-with-a-long-random-secret-before-deployment"
+FRONTEND_DIST = Path(__file__).resolve().parents[2] / "frontend" / "dist"
 
 
 def bootstrap_initial_admin() -> bool:
@@ -87,3 +90,28 @@ async def health_ready():
     from app.services.health_service import build_system_readiness
     status = await build_system_readiness()
     return JSONResponse(status, status_code=200 if status["database"] == "CONNECTED" else 503)
+
+
+# Vercel runs this FastAPI app as the single HTTP function. Mount the built
+# Vite assets explicitly so Vercel can promote them to its CDN, and serve the
+# SPA entry point for browser-side routes without catching API/health paths.
+if FRONTEND_DIST.is_dir():
+    assets_dir = FRONTEND_DIST / "assets"
+    if assets_dir.is_dir():
+        app.mount("/assets", StaticFiles(directory=str(assets_dir)), name="frontend-assets")
+
+    @app.get("/", include_in_schema=False)
+    async def frontend_index():
+        return FileResponse(FRONTEND_DIST / "index.html", headers={"Cache-Control": "no-cache"})
+
+    @app.get("/{full_path:path}", include_in_schema=False)
+    async def frontend_fallback(full_path: str):
+        if (full_path == "api" or full_path.startswith("api/")
+                or full_path == "health" or full_path.startswith("health/")):
+            raise HTTPException(status_code=404, detail="Not Found")
+
+        dist_root = FRONTEND_DIST.resolve()
+        requested_file = (FRONTEND_DIST / full_path).resolve()
+        if requested_file.is_relative_to(dist_root) and requested_file.is_file():
+            return FileResponse(requested_file)
+        return FileResponse(FRONTEND_DIST / "index.html", headers={"Cache-Control": "no-cache"})
