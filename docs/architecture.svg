@@ -1,85 +1,65 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="1040" viewBox="0 0 1440 1040" role="img" aria-labelledby="title desc">
-<title id="title">NE-Route AI system architecture</title>
-<desc id="desc">React and Leaflet frontend connects through REST and WebSocket to FastAPI. FastAPI connects to PostgreSQL and PostGIS, a separate scikit-learn machine learning service, and optional integrations including OpenStreetMap, OSRM, weather, LLM and messaging providers. Background tasks simulate GPS, refresh risk, monitor shipment delays and synchronize offline reports.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="1120" viewBox="0 0 1440 1120" role="img" aria-labelledby="title desc">
+<title id="title">NE-Route AI advanced system architecture</title>
+<desc id="desc">React Leaflet command center connects by REST and WebSocket to FastAPI core APIs, routing and logistics services, digital twin, relief resource staging, incident fusion and a hash chained decision journal. The backend connects to PostgreSQL PostGIS, a Random Forest ML service, background processors and optional external integrations.</desc>
 <defs>
-  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fffafa"/><stop offset="1" stop-color="#fff1f2"/></linearGradient>
-  <linearGradient id="red" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f15c65"/><stop offset="1" stop-color="#cf3542"/></linearGradient>
-  <filter id="shadow" x="-15%" y="-15%" width="130%" height="140%"><feDropShadow dx="0" dy="7" stdDeviation="9" flood-color="#8b343d" flood-opacity=".10"/></filter>
-  <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#d85a63"/></marker>
-  <marker id="arrowGray" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#8993a3"/></marker>
-  <style>
-    .h{font:700 28px 'Arial',sans-serif;fill:#252b36}.sub{font:14px 'Arial',sans-serif;fill:#7c8492}.ey{font:700 12px 'Arial',sans-serif;letter-spacing:2px;fill:#b85b63}.boxh{font:700 19px 'Arial',sans-serif;fill:#293241}.txt{font:14px 'Arial',sans-serif;fill:#697384}.small{font:12px 'Arial',sans-serif;fill:#9098a5}.pill{font:700 11px 'Arial',sans-serif;letter-spacing:.8px}.white{fill:#fff}.line{stroke:#d85a63;stroke-width:3;fill:none;marker-end:url(#arrow)}.lineg{stroke:#8993a3;stroke-width:2.5;fill:none;marker-end:url(#arrowGray)}.dash{stroke-dasharray:7 7}
-  </style>
+ <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fffafa"/><stop offset="1" stop-color="#fff0f1"/></linearGradient>
+ <linearGradient id="red" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f16b73"/><stop offset="1" stop-color="#ce3441"/></linearGradient>
+ <filter id="shadow" x="-15%" y="-15%" width="130%" height="140%"><feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#8b343d" flood-opacity=".10"/></filter>
+ <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#d85a63"/></marker>
+ <marker id="arrowGray" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#8993a3"/></marker>
+ <style>
+  .ey{font:700 12px Arial,sans-serif;letter-spacing:2px;fill:#b85b63}.h{font:700 31px Arial,sans-serif;fill:#252b36}.sub{font:14px Arial,sans-serif;fill:#7c8492}.boxh{font:700 17px Arial,sans-serif;fill:#293241}.txt{font:13px Arial,sans-serif;fill:#697384}.small{font:11px Arial,sans-serif;fill:#9098a5}.pill{font:700 10px Arial,sans-serif;letter-spacing:.8px}.line{stroke:#d85a63;stroke-width:3;fill:none;marker-end:url(#arrow)}.lineg{stroke:#8993a3;stroke-width:2.4;fill:none;marker-end:url(#arrowGray)}
+ </style>
 </defs>
-<rect width="1440" height="1040" rx="28" fill="url(#bg)"/>
-<circle cx="1280" cy="105" r="170" fill="#f9d9dc" opacity=".25"/><circle cx="95" cy="900" r="210" fill="#f8dadd" opacity=".20"/>
-<text x="72" y="72" class="ey">SYSTEM DESIGN / SIH 2026 · SIH26002</text>
-<text x="72" y="116" class="h" font-size="36">NE-Route AI — System Architecture</text>
-<text x="72" y="145" class="sub">Geospatial intelligence · disruption prediction · risk-aware logistics coordination</text>
-<rect x="1120" y="73" width="244" height="42" rx="21" fill="#fff" stroke="#f0c8cc"/>
-<circle cx="1144" cy="94" r="6" fill="#df444d"/><text x="1160" y="98" class="pill" fill="#b83f49">SIMULATED DEMO DATA</text>
+<rect width="1440" height="1120" rx="28" fill="url(#bg)"/>
+<circle cx="1300" cy="100" r="170" fill="#f9d9dc" opacity=".25"/><circle cx="80" cy="980" r="190" fill="#f8dadd" opacity=".18"/>
+<text x="72" y="66" class="ey">SYSTEM DESIGN / SIH 2026 · SIH26002</text>
+<text x="72" y="109" class="h">NE-Route AI — Advanced System Architecture</text>
+<text x="72" y="137" class="sub">Geospatial intelligence · cascading risk simulation · relief logistics · accountable response</text>
+<rect x="1120" y="68" width="248" height="42" rx="21" fill="#fff" stroke="#efc9cd"/><circle cx="1144" cy="89" r="6" fill="#dc444d"/><text x="1160" y="93" class="pill" fill="#b83f49">SIMULATED DEMO DATA</text>
 
-<!-- Frontend -->
-<g filter="url(#shadow)">
-<rect x="72" y="190" width="1296" height="190" rx="20" fill="#fff" stroke="#f1dfe1"/>
-<rect x="72" y="190" width="1296" height="48" rx="20" fill="#fff0f1"/>
-<path d="M72 218 Q72 238 92 238 H1348 Q1368 238 1368 218" fill="#fff0f1"/>
-</g>
-<rect x="96" y="204" width="26" height="22" rx="6" fill="url(#red)"/>
-<text x="135" y="222" class="boxh">FRONTEND APPLICATION</text>
-<text x="1340" y="221" text-anchor="end" class="pill" fill="#c64a53">REACT · TYPESCRIPT · VITE</text>
+<!-- Frontend band -->
+<g filter="url(#shadow)"><rect x="72" y="170" width="1296" height="177" rx="19" fill="#fff" stroke="#f1dfe1"/><rect x="72" y="170" width="1296" height="47" rx="19" fill="#fff0f1"/><path d="M72 195 Q72 217 94 217 H1346 Q1368 217 1368 195" fill="#fff0f1"/></g>
+<rect x="96" y="183" width="26" height="22" rx="6" fill="url(#red)"/><text x="135" y="201" class="boxh">COMMAND CENTER FRONTEND</text><text x="1340" y="200" text-anchor="end" class="pill" fill="#c64a53">REACT · TYPESCRIPT · LEAFLET</text>
 <g>
-<rect x="98" y="262" width="190" height="84" rx="12" fill="#fff8f8" stroke="#f4d9dc"/><text x="193" y="294" text-anchor="middle" class="boxh">Command Center</text><text x="193" y="318" text-anchor="middle" class="small">KPIs · response queue</text>
-<rect x="308" y="262" width="190" height="84" rx="12" fill="#fff8f8" stroke="#f4d9dc"/><text x="403" y="294" text-anchor="middle" class="boxh">GIS Live Map</text><text x="403" y="318" text-anchor="middle" class="small">Leaflet · road overlays</text>
-<rect x="518" y="262" width="190" height="84" rx="12" fill="#fff8f8" stroke="#f4d9dc"/><text x="613" y="294" text-anchor="middle" class="boxh">Route &amp; Missions</text><text x="613" y="318" text-anchor="middle" class="small">multi-stop planning</text>
-<rect x="728" y="262" width="190" height="84" rx="12" fill="#fff8f8" stroke="#f4d9dc"/><text x="823" y="294" text-anchor="middle" class="boxh">Field Operations</text><text x="823" y="318" text-anchor="middle" class="small">incidents · shipments</text>
-<rect x="938" y="262" width="190" height="84" rx="12" fill="#fff8f8" stroke="#f4d9dc"/><text x="1033" y="294" text-anchor="middle" class="boxh">Risk Intelligence</text><text x="1033" y="318" text-anchor="middle" class="small">explanations · scenarios</text>
-<rect x="1148" y="262" width="190" height="84" rx="12" fill="#fff8f8" stroke="#f4d9dc"/><text x="1243" y="294" text-anchor="middle" class="boxh">AI Copilot</text><text x="1243" y="318" text-anchor="middle" class="small">platform-grounded Q&amp;A</text>
+ <rect x="96" y="242" width="190" height="78" rx="11" fill="#fff8f8" stroke="#f4d9dc"/><text x="191" y="274" text-anchor="middle" class="boxh">Overview</text><text x="191" y="297" text-anchor="middle" class="small">KPIs · situation view</text>
+ <rect x="306" y="242" width="190" height="78" rx="11" fill="#fff8f8" stroke="#f4d9dc"/><text x="401" y="274" text-anchor="middle" class="boxh">GIS Live Map</text><text x="401" y="297" text-anchor="middle" class="small">roads · vehicles · incidents</text>
+ <rect x="516" y="242" width="190" height="78" rx="11" fill="#fff8f8" stroke="#f4d9dc"/><text x="611" y="274" text-anchor="middle" class="boxh">Route &amp; Missions</text><text x="611" y="297" text-anchor="middle" class="small">single / multi-stop planning</text>
+ <rect x="726" y="242" width="190" height="78" rx="11" fill="#fff8f8" stroke="#f4d9dc"/><text x="821" y="274" text-anchor="middle" class="boxh">Field Operations</text><text x="821" y="297" text-anchor="middle" class="small">incidents · shipments · alerts</text>
+ <rect x="936" y="242" width="190" height="78" rx="11" fill="#fff8f8" stroke="#f4d9dc"/><text x="1031" y="274" text-anchor="middle" class="boxh">Risk Intelligence</text><text x="1031" y="297" text-anchor="middle" class="small">drivers · stress tests</text>
+ <rect x="1146" y="242" width="190" height="78" rx="11" fill="#fff8f8" stroke="#f4d9dc"/><text x="1241" y="274" text-anchor="middle" class="boxh">Digital Twin &amp; Copilot</text><text x="1241" y="297" text-anchor="middle" class="small">scenarios · governed actions</text>
 </g>
 
-<!-- API -->
-<path d="M720 380 V430" class="line"/>
-<rect x="525" y="402" width="390" height="32" rx="16" fill="#fff" stroke="#f1c9cd"/>
-<text x="720" y="423" text-anchor="middle" class="pill" fill="#bb4650">HTTPS REST API · WEBSOCKET EVENTS</text>
-<g filter="url(#shadow)">
-<rect x="72" y="450" width="1296" height="225" rx="20" fill="#fff" stroke="#efdfe1"/>
-<rect x="72" y="450" width="1296" height="49" rx="20" fill="#fff0f1"/><path d="M72 477 Q72 499 94 499 H1346 Q1368 499 1368 477" fill="#fff0f1"/>
-</g>
-<rect x="96" y="464" width="26" height="22" rx="6" fill="url(#red)"/>
-<text x="135" y="483" class="boxh">APPLICATION BACKEND</text><text x="1340" y="482" text-anchor="end" class="pill" fill="#c64a53">PYTHON · FASTAPI</text>
+<!-- API connector -->
+<path d="M720 347 V390" class="line"/><rect x="512" y="357" width="416" height="30" rx="15" fill="#fff" stroke="#f1c9cd"/><text x="720" y="377" text-anchor="middle" class="pill" fill="#bb4650">HTTPS REST APIs · WEBSOCKET EVENTS · JWT RBAC</text>
+
+<!-- Backend band -->
+<g filter="url(#shadow)"><rect x="72" y="410" width="1296" height="235" rx="19" fill="#fff" stroke="#efdfe1"/><rect x="72" y="410" width="1296" height="47" rx="19" fill="#fff0f1"/><path d="M72 435 Q72 457 94 457 H1346 Q1368 457 1368 435" fill="#fff0f1"/></g>
+<rect x="96" y="423" width="26" height="22" rx="6" fill="url(#red)"/><text x="135" y="441" class="boxh">APPLICATION BACKEND</text><text x="1340" y="440" text-anchor="end" class="pill" fill="#c64a53">PYTHON · FASTAPI</text>
 <g>
-<rect x="98" y="522" width="220" height="116" rx="12" fill="#fff8f8" stroke="#f4d9dc"/><text x="208" y="553" text-anchor="middle" class="boxh">Identity &amp; Access</text><text x="208" y="579" text-anchor="middle" class="txt">JWT authentication</text><text x="208" y="601" text-anchor="middle" class="txt">role-based permissions</text>
-<rect x="338" y="522" width="220" height="116" rx="12" fill="#fff8f8" stroke="#f4d9dc"/><text x="448" y="553" text-anchor="middle" class="boxh">Operations APIs</text><text x="448" y="579" text-anchor="middle" class="txt">incidents · fleet · cargo</text><text x="448" y="601" text-anchor="middle" class="txt">alerts · offline sync</text>
-<rect x="578" y="522" width="220" height="116" rx="12" fill="#fff8f8" stroke="#f4d9dc"/><text x="688" y="553" text-anchor="middle" class="boxh">Decision Services</text><text x="688" y="579" text-anchor="middle" class="txt">risk · accessibility</text><text x="688" y="601" text-anchor="middle" class="txt">route · mission optimizer</text>
-<rect x="818" y="522" width="220" height="116" rx="12" fill="#fff8f8" stroke="#f4d9dc"/><text x="928" y="553" text-anchor="middle" class="boxh">AI Orchestration</text><text x="928" y="579" text-anchor="middle" class="txt">copilot tool execution</text><text x="928" y="601" text-anchor="middle" class="txt">grounded data snapshots</text>
-<rect x="1058" y="522" width="280" height="116" rx="12" fill="#fff8f8" stroke="#f4d9dc"/><text x="1198" y="553" text-anchor="middle" class="boxh">Background Processing</text><text x="1198" y="579" text-anchor="middle" class="txt">GPS simulation · risk refresh</text><text x="1198" y="601" text-anchor="middle" class="txt">delay monitor · alert scheduler</text>
+ <rect x="96" y="481" width="235" height="129" rx="11" fill="#fff8f8" stroke="#f4d9dc"/><text x="213" y="511" text-anchor="middle" class="boxh">Identity &amp; Core APIs</text><text x="112" y="540" class="txt">• JWT authentication / RBAC</text><text x="112" y="563" class="txt">• incidents · fleet · shipments</text><text x="112" y="586" class="txt">• alerts · offline submissions</text>
+ <rect x="350" y="481" width="235" height="129" rx="11" fill="#fff8f8" stroke="#f4d9dc"/><text x="467" y="511" text-anchor="middle" class="boxh">Routing &amp; Logistics</text><text x="366" y="540" class="txt">• graph routing / rerouting</text><text x="366" y="563" class="txt">• multi-stop relief missions</text><text x="366" y="586" class="txt">• ETA and cargo exposure</text>
+ <rect x="604" y="481" width="235" height="129" rx="11" fill="#fff5f5" stroke="#efcfd2"/><text x="721" y="511" text-anchor="middle" class="boxh">Advanced Operations</text><text x="620" y="540" class="txt">• Disaster Digital Twin</text><text x="620" y="563" class="txt">• resource pre-positioning</text><text x="620" y="586" class="txt">• incident signal fusion</text>
+ <rect x="858" y="481" width="235" height="129" rx="11" fill="#fff8f8" stroke="#f4d9dc"/><text x="975" y="511" text-anchor="middle" class="boxh">Decision Governance</text><text x="874" y="540" class="txt">• independent review workflow</text><text x="874" y="563" class="txt">• SHA-256 event hash chain</text><text x="874" y="586" class="txt">• audit integrity verification</text>
+ <rect x="1112" y="481" width="235" height="129" rx="11" fill="#fff8f8" stroke="#f4d9dc"/><text x="1229" y="511" text-anchor="middle" class="boxh">AI Orchestration &amp; Jobs</text><text x="1128" y="540" class="txt">• grounded copilot snapshots</text><text x="1128" y="563" class="txt">• GPS / risk refresh tasks</text><text x="1128" y="586" class="txt">• delay and alert monitoring</text>
 </g>
 
-<!-- Connections down -->
-<path d="M400 675 V726 H300 V760" class="lineg"/>
-<path d="M720 675 V760" class="line"/>
-<path d="M1040 675 V726 H1140 V760" class="lineg"/>
-<text x="300" y="714" text-anchor="middle" class="small">Persistence</text>
-<text x="720" y="714" text-anchor="middle" class="small">Inference requests</text>
-<text x="1140" y="714" text-anchor="middle" class="small">External adapters</text>
+<!-- Lower connectors -->
+<path d="M340 645 V704 H280 V754" class="lineg"/><path d="M720 645 V754" class="line"/><path d="M1100 645 V704 H1160 V754" class="lineg"/>
+<text x="280" y="696" text-anchor="middle" class="small">Operational persistence</text><text x="720" y="696" text-anchor="middle" class="small">Risk inference</text><text x="1160" y="696" text-anchor="middle" class="small">Provider adapters</text>
 
-<!-- Lower boxes -->
-<g filter="url(#shadow)">
-<rect x="72" y="775" width="420" height="190" rx="18" fill="#fff" stroke="#dce9e3"/>
-<rect x="510" y="775" width="420" height="190" rx="18" fill="#fff" stroke="#e2ddf4"/>
-<rect x="948" y="775" width="420" height="190" rx="18" fill="#fff" stroke="#e7e7eb"/>
-</g>
-<rect x="96" y="798" width="32" height="30" rx="8" fill="#e8f7ef"/><text x="112" y="819" text-anchor="middle" font-size="16" fill="#259764">▦</text>
-<text x="142" y="819" class="boxh">DATA LAYER</text><text x="470" y="819" text-anchor="end" class="pill" fill="#299569">POSTGRESQL · POSTGIS</text>
-<text x="104" y="858" class="txt">• Users, roles and audit records</text><text x="104" y="883" class="txt">• Districts, road graph and incidents</text><text x="104" y="908" class="txt">• Vehicles, GPS history and shipments</text><text x="104" y="933" class="txt">• Predictions, routes and alerts</text>
+<!-- Data / AI / external -->
+<g filter="url(#shadow)"><rect x="72" y="770" width="410" height="220" rx="17" fill="#fff" stroke="#dce9e3"/><rect x="515" y="770" width="410" height="220" rx="17" fill="#fff" stroke="#e2ddf4"/><rect x="958" y="770" width="410" height="220" rx="17" fill="#fff" stroke="#e7e7eb"/></g>
+<rect x="96" y="792" width="31" height="29" rx="8" fill="#e8f7ef"/><text x="111" y="812" text-anchor="middle" font-size="16" fill="#259764">▦</text><text x="140" y="812" class="boxh">DATA &amp; GOVERNANCE LAYER</text><text x="460" y="812" text-anchor="end" class="pill" fill="#299569">POSTGRESQL · POSTGIS</text>
+<text x="101" y="855" class="txt">• Districts, road graph and incident records</text><text x="101" y="882" class="txt">• Vehicles, GPS positions and essential shipments</text><text x="101" y="909" class="txt">• Logistics facilities and resource stocks</text><text x="101" y="936" class="txt">• Decision events, approvals and evidence snapshot</text><text x="101" y="963" class="small">Spatial indexes and audit retention are production roadmap items</text>
 
-<rect x="534" y="798" width="32" height="30" rx="8" fill="#f1edff"/><text x="550" y="819" text-anchor="middle" font-size="16" fill="#8065c6">✦</text>
-<text x="580" y="819" class="boxh">AI / ML SERVICE</text><text x="908" y="819" text-anchor="end" class="pill" fill="#7b63ba">PYTHON · SCIKIT-LEARN</text>
-<text x="542" y="858" class="txt">• Random Forest disruption risk inference</text><text x="542" y="883" class="txt">• Feature-driver explanations</text><text x="542" y="908" class="txt">• Batch predictions and model metadata</text><text x="542" y="933" class="txt">• Optional image model adapter (checkpoint required)</text>
+<rect x="539" y="792" width="31" height="29" rx="8" fill="#f1edff"/><text x="554" y="812" text-anchor="middle" font-size="16" fill="#8065c6">✦</text><text x="583" y="812" class="boxh">AI / ML SERVICE</text><text x="904" y="812" text-anchor="end" class="pill" fill="#7b63ba">PYTHON · SCIKIT-LEARN</text>
+<text x="544" y="855" class="txt">• Random Forest disruption risk inference</text><text x="544" y="882" class="txt">• Feature-driver explanations</text><text x="544" y="909" class="txt">• Batch prediction and model metadata</text><text x="544" y="936" class="txt">• Optional TorchScript vision adapter</text><text x="544" y="963" class="small">Synthetic training labels · human verification required</text>
 
-<rect x="972" y="798" width="32" height="30" rx="8" fill="#f0f2f5"/><text x="988" y="819" text-anchor="middle" font-size="16" fill="#667386">↗</text>
-<text x="1018" y="819" class="boxh">OPTIONAL INTEGRATIONS</text>
-<text x="980" y="858" class="txt">• OpenStreetMap basemap / OSRM adapter</text><text x="980" y="883" class="txt">• Weather provider (not configured by default)</text><text x="980" y="908" class="txt">• LLM provider, optional API key</text><text x="980" y="933" class="txt">• Email / SMS / WhatsApp provider adapters</text>
+<rect x="982" y="792" width="31" height="29" rx="8" fill="#f0f2f5"/><text x="997" y="812" text-anchor="middle" font-size="16" fill="#667386">↗</text><text x="1026" y="812" class="boxh">EXTERNAL INTEGRATIONS</text>
+<text x="987" y="855" class="txt">• OpenStreetMap basemap / optional OSRM</text><text x="987" y="882" class="txt">• Weather data provider (not configured by default)</text><text x="987" y="909" class="txt">• Optional LLM provider and API key</text><text x="987" y="936" class="txt">• Email / SMS / WhatsApp adapters</text><text x="987" y="963" class="small">Integration readiness is shown transparently in the UI</text>
 
-<text x="720" y="1008" text-anchor="middle" class="small">Prototype outputs are synthetic unless a verified external source is explicitly connected · Human approval required for operational actions</text>
+<rect x="72" y="1020" width="1296" height="56" rx="12" fill="#fff" stroke="#f0dfe1"/>
+<text x="96" y="1043" class="pill" fill="#bd4a54">DECISION SAFETY</text><text x="220" y="1043" class="txt">Simulations do not mutate operational records; proposals require authorized independent review.</text>
+<text x="96" y="1062" class="small">All roads, rainfall, incidents, depots, stock, GPS and model labels in the demo are synthetic unless an approved source is explicitly connected.</text>
 </svg>
