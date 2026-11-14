@@ -1,7 +1,7 @@
 {
   "framework": "fastapi",
   "regions": ["bom1"],
-  "buildCommand": "cd frontend && npm install && npm run build && cd .. && mkdir -p public && cp -R frontend/dist/. public/",
+  "buildCommand": "cd frontend && npm install && npm run build",
   "functions": {
     "index.py": {
       "maxDuration": 60
