@@ -1,0 +1,1 @@
+{"data_mode":"SIMULATED","incidents":[{"report_code":"NER-DEMO-001","type":"LANDSLIDE","severity":"HIGH","district":"Dima Hasao","status":"VERIFIED"},{"report_code":"NER-DEMO-002","type":"FLOOD","severity":"MEDIUM","district":"Cachar","status":"PENDING"}]}

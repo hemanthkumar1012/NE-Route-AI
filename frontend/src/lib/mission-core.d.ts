@@ -1,0 +1,2 @@
+export function scoreMissionLeg(etaMinutes: number, meanRisk: number, priority?: string): number;
+export function orderReachableStops(stops: Array<{name:string;node:string;priority:string}>, legsByKey: Record<string, {available:boolean;eta_minutes:number;mean_risk_score:number}>): {ordered:Array<{name:string;node:string;priority:string}>; unreachable:Array<{name:string;node:string;priority:string}>};
