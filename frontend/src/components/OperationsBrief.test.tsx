@@ -34,19 +34,20 @@ describe('OperationsBrief', () => {
 
   it('filters the shipment register by critical and delayed cargo', () => {
     const view = render(<OperationsBrief summary={summary} shipments={shipments} vehicles={vehicles} incidents={incidents} alerts={alerts} refreshedAt={null} onNavigate={vi.fn()} />);
-    const filters = within(view.getByRole('group', { name: 'Filter shipment register' }));
+    const local = within(view.container);
+    const filters = within(local.getByRole('group', { name: 'Filter shipment register' }));
     fireEvent.click(filters.getByRole('button', { name: 'Critical' }));
-    expect(view.getByText('MED-001')).toBeInTheDocument();
-    expect(view.queryByText('FOOD-002')).not.toBeInTheDocument();
+    expect(local.getByText('MED-001')).toBeInTheDocument();
+    expect(local.queryByText('FOOD-002')).not.toBeInTheDocument();
     fireEvent.click(filters.getByRole('button', { name: 'Delayed' }));
-    expect(view.getByText('FOOD-002')).toBeInTheDocument();
-    expect(view.queryByText('MED-001')).not.toBeInTheDocument();
+    expect(local.getByText('FOOD-002')).toBeInTheDocument();
+    expect(local.queryByText('MED-001')).not.toBeInTheDocument();
   });
 
   it('navigates to operational views from the metric cards', () => {
     const onNavigate = vi.fn();
     const view = render(<OperationsBrief summary={summary} shipments={shipments} vehicles={vehicles} incidents={incidents} alerts={alerts} refreshedAt={null} onNavigate={onNavigate} />);
-    fireEvent.click(view.getByRole('button', { name: /Open alerts/ }));
+    fireEvent.click(within(view.container).getByRole('button', { name: /Open alerts/ }));
     expect(onNavigate).toHaveBeenCalledWith('alerts');
   });
 });
