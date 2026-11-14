@@ -1,52 +1,46 @@
-# NE-Route AI — v4 end-to-end integration validation
+# NE-Route AI — Vercel + Supabase integration validation
 
 **GitHub Actions: ALL JOBS PASSED**  
-CI run: [NE-Route AI CI #43588696127](https://github.com/hemanthkumar1012/NE-Route-AI/actions/runs/43588696127)  
-Commit: `2f59009556adc98e1ebfff19eadd8c606ac539bb`
+CI run: [NE-Route AI CI #43589700170](https://github.com/hemanthkumar1012/NE-Route-AI/actions/runs/43589700170)  
+Commit: `6ecc634d2d754b52e95c77bba7b03b12e9143c54`
 
-## Application test results
+## Automated test results
 
 | Suite | Result |
 |---|---:|
-| Backend pytest | 28 passed |
+| Backend pytest | 32 passed |
 | ML pytest | 2 passed |
 | Frontend core Node tests | 5 passed |
 | React / Vitest component tests | 8 passed |
 | TypeScript + Vite production build | Passed |
+| Vercel FastAPI entrypoint import | Passed |
 
-**Total automated tests: 43 passed, 0 failed.**
+**Total automated tests: 47 passed, 0 failed.**
 
 ## Container validation results
 
 | Check | Result |
 |---|---:|
 | Docker Compose configuration | Passed |
-| FastAPI backend image build | Passed |
-| ML service image build | Passed |
-| Production Nginx frontend image build | Passed |
+| FastAPI backend Docker image | Built |
+| ML service Docker image | Built |
+| Production Nginx frontend Docker image | Built |
 | GitHub Actions jobs | 3 / 3 passed |
 
-The production frontend image serves the Vite bundle through Nginx and proxies `/api` and `/health` to FastAPI. The Vite development server uses matching proxies for local development.
+## Deployment changes
 
-## Run locally
+- Root `index.py` exports the existing FastAPI application for Vercel's Python runtime.
+- `vercel.json` builds the React frontend into `public/` and targets Vercel region `bom1`.
+- SQLAlchemy normalizes Supabase PostgreSQL URLs to psycopg 3 and uses `NullPool`, SSL and `prepare_threshold=None` for Supabase serverless transaction-pooler connections.
+- Production mode disables demo seeding and automatic table creation.
+- Incident images use Supabase Storage when a server-only service key and private bucket are configured; Vercel does not silently write persistent uploads to ephemeral disk.
+- An idempotent initial administrator bootstrap is available through server-side environment variables.
 
-```bash
-cp .env.example .env
-docker compose config
-docker compose up --build
-```
+## Not yet completed
 
-Open:
-- Frontend: `http://localhost:5173`
-- API documentation: `http://localhost:8000/docs`
-- Backend liveness: `http://localhost:8000/health`
-- Backend readiness: `http://localhost:8000/health/ready`
-- ML health: `http://localhost:8100/health`
+- No Supabase project has been selected for NE-Route AI, so the schema in `supabase/schema.sql` has not been applied.
+- Vercel team authorization and project linking are pending user approval.
+- A hosted preview deployment and real Supabase database connectivity test have not yet run.
+- The separate ML service, external weather, SMS, email and WhatsApp providers are not included in the single Vercel FastAPI deployment; fallback status is shown honestly.
 
-## Remaining validation / security work
-
-- CI built all images and validated the Compose configuration, but did not start the full containers against a live PostgreSQL/PostGIS instance.
-- npm reported 6 dependency advisories (3 moderate, 1 high and 2 critical). Review with `cd frontend && npm audit` before deployment. Do not apply `npm audit fix --force` blindly.
-- The road graph, depot inventory, GPS, weather and ML training labels are synthetic. They do not establish real-world prediction accuracy or safe navigation.
-
-All operational simulation data remains explicitly labeled synthetic. Dispatch, inventory release, road closure, public advisories and incident verification require real-world validation and authorized human action.
+All demonstration road, rainfall, incident, depot, stock, GPS and ML training data remains synthetic. The passing CI suite validates code and image builds, not real-world route suitability or predictive accuracy.
