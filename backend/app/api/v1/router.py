@@ -4,6 +4,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Annotated
 import csv
+import hmac
 import io
 import json
 import os
@@ -13,11 +14,12 @@ import httpx
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, WebSocket, WebSocketDisconnect
 from fastapi.responses import StreamingResponse
 from sqlalchemy import select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.core.config import settings
 from app.core.database import get_db
-from app.core.security import current_user, issue_token, require_roles, verify_password
+from app.core.security import current_user, hash_password, issue_token, require_roles, verify_password
 from app.models.entities import Alert, District, Incident, RoadSegment, Shipment, User, Vehicle, WeatherObservation
 from app.schemas.api import (CopilotAsk, IncidentCreate, IncidentStatusUpdate, LoginRequest, OfflineSync,
     RoutePlanRequest, AlertUpdate, MissionOptimizeRequest, ScenarioRequest, PlaybookRequest)
@@ -32,7 +34,36 @@ router = APIRouter()
 
 
 def user_or_401(email: str, password: str, db: Session) -> User:
-    user = db.scalar(select(User).where(User.email == email, User.is_active.is_(True)))
+    normalized_email = email.strip().lower()
+    user = db.scalar(select(User).where(User.email == normalized_email, User.is_active.is_(True)))
+
+    # Vercel's serverless lifecycle may not execute FastAPI lifespan hooks on every
+    # cold start. Create the first administrator on the first valid login using
+    # the server-only bootstrap credentials; never trust a browser-supplied role.
+    if (
+        user is None
+        and settings.initial_admin_email
+        and settings.initial_admin_password
+        and normalized_email == settings.initial_admin_email.strip().lower()
+        and hmac.compare_digest(password, settings.initial_admin_password)
+    ):
+        candidate = User(
+            email=normalized_email,
+            full_name="NE-Route AI Administrator",
+            role="ADMIN",
+            password_hash=hash_password(password),
+            is_active=True,
+        )
+        db.add(candidate)
+        try:
+            db.commit()
+            db.refresh(candidate)
+            user = candidate
+        except IntegrityError:
+            # Handle simultaneous first-login requests without creating duplicates.
+            db.rollback()
+            user = db.scalar(select(User).where(User.email == normalized_email, User.is_active.is_(True)))
+
     if not user or not verify_password(password, user.password_hash):
         raise HTTPException(status_code=401, detail="Invalid email or password")
     return user
