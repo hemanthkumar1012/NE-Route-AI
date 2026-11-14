@@ -238,17 +238,9 @@ def export_csv(db: Session = Depends(get_db), user: User = Depends(current_user)
 
 
 @router.get("/system/readiness")
-async def readiness(user: User = Depends(current_user)):
-    ml_ready = False
-    try:
-        async with httpx.AsyncClient(timeout=1.5) as client:
-            response = await client.get(f"{settings.ml_service_url}/health")
-            ml_ready = response.status_code == 200
-    except Exception:
-        pass
-    return {"api": "READY", "database": "CONNECTED", "ml_service": "READY" if ml_ready else "UNAVAILABLE_FALLBACK_ACTIVE",
-        "weather_provider": "SIMULATION_ONLY", "sms_provider": "SIMULATION_ONLY", "email_provider": "NOT_CONFIGURED",
-        "whatsapp_provider": "NOT_CONFIGURED", "vision_model": "HUMAN_REVIEW_REQUIRED", "dispatch_authority": "HUMAN_APPROVAL_REQUIRED"}
+async def readiness():
+    from app.services.health_service import build_system_readiness
+    return await build_system_readiness()
 
 
 @router.post("/missions/optimize")
@@ -263,6 +255,8 @@ def response_playbook(payload: PlaybookRequest, user: User = Depends(current_use
 
 @router.post("/demo/trigger-disruption")
 def trigger_disruption(db: Session = Depends(get_db), user: User = Depends(require_roles("ADMIN", "GOVERNMENT_OFFICIAL"))):
+    if not settings.demo_mode:
+        raise HTTPException(status_code=404, detail="Demo controls are disabled outside DEMO_MODE")
     segment = db.scalar(select(RoadSegment).where(RoadSegment.name == "Guwahati–Dimapur Corridor"))
     if not segment:
         raise HTTPException(status_code=404, detail="Demo corridor not found")
@@ -277,6 +271,8 @@ def trigger_disruption(db: Session = Depends(get_db), user: User = Depends(requi
 
 @router.post("/demo/reset")
 def reset_demo(db: Session = Depends(get_db), user: User = Depends(require_roles("ADMIN"))):
+    if not settings.demo_mode:
+        raise HTTPException(status_code=404, detail="Demo controls are disabled outside DEMO_MODE")
     segment = db.scalar(select(RoadSegment).where(RoadSegment.name == "Guwahati–Dimapur Corridor"))
     if segment:
         segment.operational_status = "OPEN"

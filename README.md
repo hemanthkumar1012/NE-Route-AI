@@ -66,10 +66,11 @@ NE-Route AI is a hackathon-ready decision-support prototype for visualizing simu
 
    - Frontend: http://localhost:5173
    - API docs: http://localhost:8000/docs
-   - Backend health: http://localhost:8000/health
+   - Backend liveness: http://localhost:8000/health
+   - Backend readiness (database + ML): http://localhost:8000/health/ready
    - ML health: http://localhost:8100/health
 
-The first ML startup generates and trains a synthetic Random Forest model. The API then enables PostGIS, creates the relational tables and seeds the demonstration dataset. First startup can take several minutes depending on network and hardware.
+The first ML startup generates and trains a synthetic Random Forest model. The API creates relational tables and seeds the synthetic demonstration dataset when `DEMO_MODE=true`. PostGIS is enabled when the database supports it, but the current prototype can start without the extension because coordinates are stored as JSON. The frontend is built as a production static bundle and Nginx proxies `/api` and `/health` to FastAPI. First startup can take several minutes depending on network and hardware.
 
 ## Demo accounts
 
@@ -80,7 +81,7 @@ The first ML startup generates and trains a synthetic Random Forest model. The A
 | Logistics manager | `logistics@neroute.ai` | `Logistics@123` |
 | Field officer | `field@neroute.ai` | `Field@123` |
 
-These are public demo credentials. Replace them and the JWT secret before any shared or deployed environment.
+These are public demo credentials and are created only when `DEMO_MODE=true`. Do not use them on a shared or deployed environment. Set `DEMO_MODE=false` and a unique high-entropy `JWT_SECRET` before non-demo deployment..
 
 ## Suggested 3-minute demo
 
@@ -171,7 +172,7 @@ Install backend and ML dependencies using the Dockerfiles or a Python virtual en
 make test
 ```
 
-This runs backend unit/service/schema tests, ML synthetic-data training tests and dependency-free frontend core tests. With frontend npm dependencies installed, run:
+This runs backend unit/service/schema tests, ML synthetic-data training tests and dependency-free frontend core tests. With the backend running at `http://localhost:8000`, run the Vite frontend in development mode with `cd frontend && npm install && npm run dev`. Vite proxies `/api` and `/health` to FastAPI. For the production container stack, use the Docker Compose command above.\n\nWith frontend npm dependencies installed, run:
 
 ```bash
 cd frontend
