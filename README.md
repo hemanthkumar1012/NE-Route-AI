@@ -180,7 +180,7 @@ npm test
 npm run build
 ```
 
-`make test-full` runs all those checks when the frontend dependencies are installed. Test results from the development build environment are recorded in `TEST_RESULTS.md`; the frontend component runner and Docker/PostGIS integration were not executed in that environment because npm registry connectivity and Docker were unavailable.
+`make test-full` runs all suites when frontend dependencies are installed. The latest [GitHub Actions CI run](https://github.com/hemanthkumar1012/NE-Route-AI/actions/runs/43575729420) passed: 26 backend tests, 2 ML tests, 5 frontend core tests, 6 React component tests and the Vite production build (39 tests total). See [Advanced v4 test results](TEST_RESULTS_ADVANCED.md). Docker Compose startup and PostgreSQL/PostGIS runtime integration were not included in that CI run.\n\n**Dependency security note:** the CI `npm install` audit summary reported 6 advisories (3 moderate, 1 high, 2 critical). Run `cd frontend && npm audit` and review the affected dependency paths before deployment. Avoid applying `npm audit fix --force` without checking for breaking upgrades.
 
 ## Data and deployment safety
 
