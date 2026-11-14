@@ -20,8 +20,8 @@ export default function OverviewCommandDeck({ summary, incidents, alerts, shipme
   const openAlerts = alerts.filter(item => String(item.status || '').toUpperCase() === 'OPEN');
   const delayedShipments = shipments.filter(item => /DELAY|LATE|AT.?RISK/i.test(String(item.status || '')));
   const attention = [
-    ...openIncidents.slice(0, 3).map(item => ({
-      key: String(item.id || item.report_code || Math.random()),
+    ...openIncidents.slice(0, 3).map((item, index) => ({
+      key: String(item.id || item.report_code || `incident-${index}`),
       kind: 'INCIDENT',
       title: text(item.incident_type, 'Field incident'),
       meta: [item.report_code, item.district].filter(Boolean).join(' · ') || 'Incident record',
@@ -29,8 +29,8 @@ export default function OverviewCommandDeck({ summary, incidents, alerts, shipme
       page: 'incidents' as Page,
       icon: ShieldAlert,
     })),
-    ...openAlerts.slice(0, 2).map(item => ({
-      key: String(item.id || item.alert_code || Math.random()),
+    ...openAlerts.slice(0, 2).map((item, index) => ({
+      key: String(item.id || item.alert_code || `alert-${index}`),
       kind: 'ALERT',
       title: text(item.title || item.alert_type || item.message, 'Operational alert'),
       meta: text(item.alert_code, 'Alert awaiting review'),
@@ -38,8 +38,8 @@ export default function OverviewCommandDeck({ summary, incidents, alerts, shipme
       page: 'alerts' as Page,
       icon: Radar,
     })),
-    ...delayedShipments.slice(0, 2).map(item => ({
-      key: String(item.id || item.shipment_code || Math.random()),
+    ...delayedShipments.slice(0, 2).map((item, index) => ({
+      key: String(item.id || item.shipment_code || `shipment-${index}`),
       kind: 'SHIPMENT',
       title: text(item.shipment_code, 'Priority shipment'),
       meta: [item.cargo_type, item.destination].filter(Boolean).join(' · ') || 'Shipment status requires review',
