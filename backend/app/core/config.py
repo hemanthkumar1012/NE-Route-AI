@@ -1,7 +1,9 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
+
     database_url: str = "postgresql+psycopg://neroute:neroute_dev@db:5432/neroute"
     jwt_secret: str = "replace-with-a-long-random-secret-before-deployment"
     jwt_algorithm: str = "HS256"
@@ -11,6 +13,13 @@ class Settings(BaseSettings):
     openai_api_key: str = ""
     openai_model: str = "gpt-4o-mini"
     upload_dir: str = "/app/uploads"
-    demo_mode: bool = True
+    demo_mode: bool = False
+    initial_admin_email: str = ""
+    initial_admin_password: str = ""
+    vercel_url: str = ""
+    supabase_url: str = ""
+    supabase_service_role_key: str = ""
+    supabase_storage_bucket: str = "incident-media"
+
 
 settings = Settings()

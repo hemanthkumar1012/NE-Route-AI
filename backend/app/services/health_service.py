@@ -56,6 +56,8 @@ async def build_system_readiness() -> dict:
         "sms_provider": "NOT_CONFIGURED",
         "email_provider": "NOT_CONFIGURED",
         "whatsapp_provider": "NOT_CONFIGURED",
+        "media_storage": "SUPABASE_STORAGE_CONFIGURED" if settings.supabase_url and settings.supabase_service_role_key else ("LOCAL_VOLUME" if not __import__("os").getenv("VERCEL") else "NOT_CONFIGURED"),
+        "initial_admin_bootstrap": "CONFIGURED" if settings.initial_admin_email and settings.initial_admin_password else "NOT_CONFIGURED",
         "vision_model": "HUMAN_REVIEW_REQUIRED",
         "dispatch_authority": "HUMAN_APPROVAL_REQUIRED",
     }

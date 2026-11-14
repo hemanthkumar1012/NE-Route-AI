@@ -6,6 +6,7 @@ from typing import Annotated
 import csv
 import io
 import json
+import os
 import uuid
 
 import httpx
@@ -119,23 +120,52 @@ def create_incident(payload: IncidentCreate, db: Session = Depends(get_db), user
 
 
 @router.post("/incidents/{incident_id}/media")
-async def upload_incident_media(incident_id: uuid.UUID, file: UploadFile = File(...), db: Session = Depends(get_db), user: User = Depends(current_user)):
+async def upload_incident_media(
+    incident_id: uuid.UUID,
+    file: UploadFile = File(...),
+    db: Session = Depends(get_db),
+    user: User = Depends(current_user),
+):
     incident = db.get(Incident, incident_id)
     if not incident:
         raise HTTPException(status_code=404, detail="Incident not found")
+
     content = await file.read()
     if not content or len(content) > 8 * 1024 * 1024:
         raise HTTPException(status_code=400, detail="Image must be non-empty and no larger than 8 MB")
     if file.content_type not in ("image/jpeg", "image/png", "image/webp"):
         raise HTTPException(status_code=415, detail="Only JPEG, PNG and WebP images are accepted")
-    upload_dir = Path(settings.upload_dir)
-    upload_dir.mkdir(parents=True, exist_ok=True)
+
     suffix = {"image/jpeg": ".jpg", "image/png": ".png", "image/webp": ".webp"}[file.content_type]
     key = f"{incident_id}/{uuid.uuid4().hex}{suffix}"
+
+    if settings.supabase_url and settings.supabase_service_role_key:
+        bucket = settings.supabase_storage_bucket.strip("/")
+        endpoint = f"{settings.supabase_url.rstrip('/')}/storage/v1/object/{bucket}/{key}"
+        headers = {
+            "Authorization": f"Bearer {settings.supabase_service_role_key}",
+            "apikey": settings.supabase_service_role_key,
+            "Content-Type": file.content_type,
+            "x-upsert": "false",
+        }
+        async with httpx.AsyncClient(timeout=20) as client:
+            response = await client.put(endpoint, content=content, headers=headers)
+        if response.status_code not in (200, 201):
+            raise HTTPException(status_code=502, detail="Supabase Storage upload failed; verify the private bucket and service configuration")
+        return {"incident_id": str(incident_id), "storage_key": key, "bucket": bucket,
+                "size_bytes": len(content), "status": "UPLOADED_PENDING_HUMAN_REVIEW",
+                "storage_provider": "SUPABASE_STORAGE"}
+
+    if os.getenv("VERCEL") == "1":
+        raise HTTPException(status_code=503, detail="Persistent incident media storage is not configured. Add server-only Supabase Storage settings.")
+
+    upload_dir = Path(settings.upload_dir)
+    upload_dir.mkdir(parents=True, exist_ok=True)
     target = upload_dir / key
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_bytes(content)
-    return {"incident_id": str(incident_id), "storage_key": key, "size_bytes": len(content), "status": "UPLOADED_PENDING_HUMAN_REVIEW"}
+    return {"incident_id": str(incident_id), "storage_key": key, "size_bytes": len(content),
+            "status": "UPLOADED_PENDING_HUMAN_REVIEW", "storage_provider": "LOCAL_VOLUME"}
 
 
 @router.patch("/incidents/{incident_id}/status")

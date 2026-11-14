@@ -26,7 +26,11 @@ NE-Route AI is a hackathon-ready decision-support prototype for visualizing simu
 - Spatial-temporal incident fusion: duplicate-candidate clustering and source-corroboration signals with human review.
 - Append-only SHA-256 decision journal with independent approval workflow and chain-integrity verification.
 - System Health & Diagnostics workspace with live database, PostGIS, ML service and configuration probes.
-- Docker Compose stack and GitHub Actions CI workflow for backend, ML and frontend checks.
+- Docker Compose stack for local development and GitHub Actions CI workflow for backend, ML, frontend and container builds.
+- Vercel-compatible FastAPI entrypoint with a production React static build and same-origin API deployment.
+- Supabase serverless PostgreSQL configuration using transaction pooling, psycopg 3 and NullPool.
+- Production startup safety: demo seeding is disabled by default; schema is migration-managed and an initial administrator can be provisioned securely.
+- Supabase Storage adapter for persistent incident media; Vercel does not silently save uploads to ephemeral local files.
 
 ## Architecture
 
@@ -42,7 +46,7 @@ NE-Route AI is a hackathon-ready decision-support prototype for visualizing simu
 - At least 4 GB available RAM for the database, Python services and frontend build.
 - Internet access during first startup for container images, Python packages, npm packages and OpenStreetMap tiles.
 
-## Quick start (recommended)
+## Local quick start (Docker Compose)
 
 1. Clone or extract the repository and enter the project directory.
 2. Copy environment defaults:
@@ -197,3 +201,18 @@ npm run build
 ## License
 
 Add a project license before public reuse or distribution. Contributions should include tests and preserve the synthetic-data disclaimers.
+
+
+## Vercel + Supabase deployment
+
+The repository supports a single-origin Vercel deployment: FastAPI is exported from root `index.py`; the Vite frontend is built into `public/` for Vercel's static CDN. The frontend calls the API using the relative `/api/v1` path.
+
+1. Connect `hemanthkumar1012/NE-Route-AI` to Vercel with the repository root as the project root.
+2. Use the FastAPI framework preset or allow Vercel to detect it. `vercel.json` builds the frontend and copies its bundle into `public/`.
+3. Use a dedicated Supabase project for NE-Route AI. For Vercel serverless API traffic, use Supabase's shared **transaction pooler** (port 6543). SQLAlchemy is configured with psycopg 3, `NullPool`, SSL, and disabled prepared statements.
+4. Apply the Supabase schema migration before setting `DEMO_MODE=false`. Production startup never runs `Base.metadata.create_all` and never seeds synthetic records.
+5. Set Vercel server-side environment variables: `DATABASE_URL`, `JWT_SECRET`, `DEMO_MODE=false`, `INITIAL_ADMIN_EMAIL`, `INITIAL_ADMIN_PASSWORD`. Remove the one-time initial admin password after bootstrap.
+6. For incident photos, also set `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, and `SUPABASE_STORAGE_BUCKET`. The service-role key must remain server-only and must never use a `VITE_*` prefix.
+7. Deploy a preview first. Verify `/health/ready`, login, incident creation, route planning and advanced operations before promoting to production.
+
+**Production boundaries:** do not reuse an unrelated Supabase project without approval. The separate ML service, live weather, SMS, email and WhatsApp providers remain optional/unconfigured unless separately deployed. Vercel serverless functions do not run the Compose WebSocket/GPS worker as a persistent process; use polling for browser updates. Road, rainfall, inventory and GPS demo data are synthetic.
