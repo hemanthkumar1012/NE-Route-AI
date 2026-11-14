@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Activity, AlertTriangle, Bell, Bot, ChevronDown, CircleHelp, ClipboardList, CloudRain, Command, Download, FileText, Gauge, HeartPulse, Layers, LogOut, Map, MapPinned, Menu, Package, RadioTower, RefreshCw, Route, Search, Settings, ShieldCheck, Truck, Users, X } from 'lucide-react';
+import { Activity, AlertTriangle, ArrowUpRight, Bell, Bot, ChevronDown, CircleHelp, ClipboardList, CloudRain, Command, Download, FileText, Gauge, HeartPulse, Layers, LogOut, Map, MapPinned, Menu, Package, RadioTower, RefreshCw, Route, Search, Settings, ShieldCheck, Truck, Users, X } from 'lucide-react';
 import { api } from './services/api';
 import type { DashboardSummary, User } from './types';
 import LogisticsMap from './components/LogisticsMap';
