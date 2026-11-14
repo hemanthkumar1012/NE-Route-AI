@@ -1,17 +1,16 @@
 # Automated test and validation record
 
-This file records checks performed during the Advanced v3 packaging session. It is not a CI guarantee.
+The latest Advanced v4 CI run passed on GitHub Actions. See [TEST_RESULTS_ADVANCED.md](TEST_RESULTS_ADVANCED.md) for the exact run, commit and suite results.
 
-| Check | Result | Notes |
-|---|---:|---|
-| Backend pytest | 27 passed | Service, schema, mission optimizer, response playbooks and risk tests |
-| ML pytest | 2 passed | Synthetic generator, model training and artifact output |
-| Frontend core Node tests | 6 passed | Risk classification, resilience and mission utility logic |
-| Python compilation | Passed | Backend, ML and scripts syntax checks |
-| TypeScript / TSX syntax scan | 11 files passed | Static syntax scan only; not a TypeScript compiler build |
-| React/Vitest component tests | Not run | npm registry unavailable during packaging environment |
-| Vite production build | Not run | npm dependencies unavailable |
-| Docker Compose integration | Not run | Docker CLI unavailable in packaging environment |
-| PostgreSQL/PostGIS integration | Not run | No Docker/database runtime in packaging environment |
+| Check | Result |
+|---|---:|
+| Backend pytest | 26 passed |
+| ML pytest | 2 passed |
+| Frontend core Node tests | 5 passed |
+| React / Vitest component tests | 6 passed |
+| TypeScript + Vite production build | Passed |
+| GitHub Actions jobs | 2 / 2 passed |
 
-All operational data is synthetic. ML holdout metrics use synthetic labels and are not evidence of real-world predictive accuracy. Run the complete commands in README on a machine with dependencies available before a formal SIH submission.
+Docker Compose startup and PostgreSQL/PostGIS runtime integration were not run in CI. The npm dependency installation also reported 6 advisories (3 moderate, 1 high, 2 critical); review with `cd frontend && npm audit` before deployment.
+
+All operational demo data and ML training labels are synthetic. A passing CI suite validates code-level checks, not the real-world predictive accuracy of the model or the suitability of the illustrative route graph.
