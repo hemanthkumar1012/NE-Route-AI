@@ -3,7 +3,7 @@ import asyncio
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 from app.core.security import hash_password
-from app.models.entities import Alert, District, Incident, RoadSegment, Shipment, User, Vehicle, WeatherObservation
+from app.models.entities import Alert, District, Incident, RoadSegment, Shipment, User, Vehicle, WeatherObservation, LogisticsFacility, ResourceStock
 
 DISTRICTS = [
     ("Kamrup Metropolitan", "Assam", 88, [91.7362, 26.1445]), ("Dima Hasao", "Assam", 61, [93.0176, 25.3478]),
@@ -94,3 +94,39 @@ async def vehicle_position_stream():
         await asyncio.sleep(2)
         yield {"type": "GPS_UPDATE", "data_mode": "SIMULATED", "vehicle_code": "NER-VAN-014",
             "speed_kmph": round(random.uniform(22, 46), 1), "timestamp": datetime.now(timezone.utc).isoformat()}
+
+
+
+def seed_advanced_data(db: Session):
+    """Seed illustrative logistics hubs and stock records independently of core demo users."""
+    facilities = [
+        ("GHY-REGIONAL", "Guwahati Regional Logistics Hub", "Guwahati", "REGIONAL_HUB", [91.7362, 26.1445], 12000),
+        ("DIM-RELIEF", "Dimapur Relief Distribution Hub", "Dimapur", "RELIEF_HUB", [93.7266, 25.9044], 6500),
+        ("SIL-DEPOT", "Silchar Essential Supplies Depot", "Silchar", "SUPPLY_DEPOT", [92.7789, 24.8333], 5200),
+        ("SHL-DEPOT", "Shillong Regional Depot", "Shillong", "SUPPLY_DEPOT", [91.8933, 25.5788], 4500),
+        ("IMF-MED", "Imphal Medical Distribution Centre", "Imphal", "MEDICAL_DEPOT", [93.9368, 24.8170], 4800),
+    ]
+    stock_profiles = {
+        "GHY-REGIONAL": {"MEDICAL_KITS": (800, 180, "kits"), "FOOD_PACKS": (2400, 500, "packs"), "RELIEF_KITS": (1250, 260, "kits"), "ROAD_REPAIR_KITS": (420, 90, "kits"), "FUEL_LITERS": (18000, 3500, "liters")},
+        "DIM-RELIEF": {"MEDICAL_KITS": (320, 100, "kits"), "FOOD_PACKS": (1200, 250, "packs"), "RELIEF_KITS": (700, 160, "kits"), "ROAD_REPAIR_KITS": (210, 60, "kits"), "FUEL_LITERS": (7500, 1500, "liters")},
+        "SIL-DEPOT": {"MEDICAL_KITS": (260, 90, "kits"), "FOOD_PACKS": (900, 220, "packs"), "RELIEF_KITS": (550, 140, "kits"), "ROAD_REPAIR_KITS": (180, 55, "kits"), "FUEL_LITERS": (6200, 1400, "liters")},
+        "SHL-DEPOT": {"MEDICAL_KITS": (180, 70, "kits"), "FOOD_PACKS": (700, 180, "packs"), "RELIEF_KITS": (360, 100, "kits"), "ROAD_REPAIR_KITS": (150, 45, "kits"), "FUEL_LITERS": (5000, 1100, "liters")},
+        "IMF-MED": {"MEDICAL_KITS": (420, 120, "kits"), "FOOD_PACKS": (600, 160, "packs"), "RELIEF_KITS": (400, 110, "kits"), "ROAD_REPAIR_KITS": (95, 45, "kits"), "FUEL_LITERS": (3900, 1000, "liters")},
+    }
+    existing_codes = set(db.scalars(select(LogisticsFacility.code)))
+    created = {}
+    for code, name, node, facility_type, coordinates, capacity in facilities:
+        if code in existing_codes:
+            facility = db.scalar(select(LogisticsFacility).where(LogisticsFacility.code == code))
+        else:
+            facility = LogisticsFacility(code=code, name=name, node_name=node, facility_type=facility_type,
+                                         coordinates=coordinates, capacity_units=capacity, is_operational=True)
+            db.add(facility)
+            db.flush()
+        created[code] = facility
+        existing_stock = set(db.scalars(select(ResourceStock.resource_type).where(ResourceStock.facility_id == facility.id)))
+        for resource_type, (quantity, reorder_level, unit) in stock_profiles[code].items():
+            if resource_type not in existing_stock:
+                db.add(ResourceStock(facility_id=facility.id, resource_type=resource_type,
+                                     quantity=quantity, reorder_level=reorder_level, unit=unit))
+    db.commit()
