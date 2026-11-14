@@ -21,6 +21,11 @@ NE-Route AI is a hackathon-ready decision-support prototype for visualizing simu
 - Platform-grounded copilot with deterministic fallback and optional OpenAI API connection.
 - Operations-wide CSV export, risk distribution and explainability panel, fleet GPS freshness monitoring, prioritized response recommendations, platform readiness reporting and non-persistent rainfall / bridge stress-test scenarios.
 - Incident image upload storage. Vision classification intentionally returns manual-review-required until a trained, validated classifier is installed.
+- Disaster Digital Twin: non-persistent compound-hazard stress tests, network fragmentation, cascading shipment impact, district accessibility loss and illustrative recovery trajectories.
+- Strategic relief pre-positioning: risk-adjusted hub-to-district allocation proposals for medical kits, food packs, relief kits, road-repair kits and fuel.
+- Spatial-temporal incident fusion: duplicate-candidate clustering and source-corroboration signals with human review.
+- Append-only SHA-256 decision journal with independent approval workflow and chain-integrity verification.
+- Docker Compose stack and GitHub Actions CI workflow for backend, ML and frontend checks.
 
 ## Architecture
 
@@ -123,7 +128,7 @@ All application endpoints use `/api/v1` and require `Authorization: Bearer <toke
 | GET | `/system/readiness` | API, ML, weather, notification and human-approval readiness |
 | POST | `/demo/trigger-disruption` | Trigger seeded landslide scenario |
 | POST | `/demo/reset` | Restore simulated closure state while retaining history |
-| WS | `/api/v1/ws/live?token=...` | Simulated GPS updates |
+| POST | `/advanced/digital-twin/run` | Compound disruption digital twin and cascading impact projection |\n| POST | `/advanced/resource-staging/plan` | Risk-adjusted multi-hub relief allocation proposal |\n| GET | `/advanced/incident-fusion/analyze` | Spatial-temporal duplicate candidate and corroboration analysis |\n| POST | `/advanced/decisions/propose` | Record an operational proposal for independent review |\n| POST | `/advanced/decisions/{proposal_id}/review` | Append an authorized approval / rejection event |\n| GET | `/advanced/decisions` | Decision proposal and review history |\n| GET | `/advanced/decisions/integrity` | Verify SHA-256 journal chain |\n| WS | `/api/v1/ws/live?token=...` | Simulated GPS updates |
 
 ## Example API calls
 
@@ -159,8 +164,7 @@ The **Mission Control** workspace adds a multi-stop delivery optimizer. It compu
 
 The **Risk Intelligence** workspace includes: network resilience heuristic, current risk-band distribution, ranked corridor exposure with feature-driver explanations, medicine / critical cargo exposure, last-GPS freshness checks, a prioritized response queue, service-readiness inventory, non-persistent rainfall and bridge-vulnerability stress tests, and combined operations CSV export. Scenario projections do not alter stored operational state.
 
-## Tests
-
+## Digital Twin & Strategic Response\n\nThe advanced workspace connects four capabilities: (1) non-persistent disaster digital-twin scenarios that calculate cascading road, shipment and district effects; (2) resource pre-positioning recommendations from synthetic regional hubs; (3) spatial-temporal incident corroboration to surface possible duplicate reports; and (4) an append-only, hash-chained decision journal with independent reviewer controls. See [Advanced Operations documentation](docs/advanced-operations.md).\n\nThese features are decision-support prototypes. They do not issue official road closures, dispatch vehicles, move inventory, publish public alerts or automatically merge reports. The road graph, facility stocks and scenario parameters are synthetic.\n\n## Tests\n
 Install backend and ML dependencies using the Dockerfiles or a Python virtual environment. Run:
 
 ```bash
