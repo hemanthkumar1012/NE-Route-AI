@@ -25,6 +25,7 @@ NE-Route AI is a hackathon-ready decision-support prototype for visualizing simu
 - Strategic relief pre-positioning: risk-adjusted hub-to-district allocation proposals for medical kits, food packs, relief kits, road-repair kits and fuel.
 - Spatial-temporal incident fusion: duplicate-candidate clustering and source-corroboration signals with human review.
 - Append-only SHA-256 decision journal with independent approval workflow and chain-integrity verification.
+- System Health & Diagnostics workspace with live database, PostGIS, ML service and configuration probes.
 - Docker Compose stack and GitHub Actions CI workflow for backend, ML and frontend checks.
 
 ## Architecture
@@ -70,7 +71,7 @@ NE-Route AI is a hackathon-ready decision-support prototype for visualizing simu
    - Backend readiness (database + ML): http://localhost:8000/health/ready
    - ML health: http://localhost:8100/health
 
-The first ML startup generates and trains a synthetic Random Forest model. The API creates relational tables and seeds the synthetic demonstration dataset when `DEMO_MODE=true`. PostGIS is enabled when the database supports it, but the current prototype can start without the extension because coordinates are stored as JSON. The frontend is built as a production static bundle and Nginx proxies `/api` and `/health` to FastAPI. First startup can take several minutes depending on network and hardware.
+The first ML startup generates and trains a synthetic Random Forest model. The API creates relational tables and seeds the synthetic demonstration dataset when `DEMO_MODE=true`. PostGIS is enabled when the database supports it, but the current prototype can start without the extension because coordinates are stored as JSON. The frontend is built as a production static bundle and Nginx proxies `/api` and `/health` to FastAPI. The Vite development server also proxies those paths to the local API. First startup can take several minutes depending on network and hardware.
 
 ## Demo accounts
 
@@ -81,7 +82,7 @@ The first ML startup generates and trains a synthetic Random Forest model. The A
 | Logistics manager | `logistics@neroute.ai` | `Logistics@123` |
 | Field officer | `field@neroute.ai` | `Field@123` |
 
-These are public demo credentials and are created only when `DEMO_MODE=true`. Do not use them on a shared or deployed environment. Set `DEMO_MODE=false` and a unique high-entropy `JWT_SECRET` before non-demo deployment..
+These are public demo credentials and are created only when `DEMO_MODE=true`. Do not use them on a shared or deployed environment. Set `DEMO_MODE=false` and a unique high-entropy `JWT_SECRET` before non-demo deployment.
 
 ## Suggested 3-minute demo
 
