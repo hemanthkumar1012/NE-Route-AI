@@ -24,15 +24,11 @@ NE-Route AI is a hackathon-ready decision-support prototype for visualizing simu
 
 ## Architecture
 
-```text
-React + Leaflet (5173)
-       | REST + WebSocket
-       v
-FastAPI API (8000) ---------> ML service (8100)
-       |                       | Random Forest model
-       v                       | synthetic training
-PostgreSQL + PostGIS <---------+
-```
+![NE-Route AI system architecture](docs/architecture.svg)
+
+*System overview: React / Leaflet frontend → FastAPI application backend → PostgreSQL / PostGIS and the separate AI/ML service, with optional external integrations. All demonstration telemetry and predictions are explicitly marked as simulated.*
+
+[Open the architecture diagram separately](docs/architecture.svg).
 
 ## Prerequisites
 
