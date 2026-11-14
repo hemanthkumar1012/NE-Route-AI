@@ -106,3 +106,40 @@ class WeatherObservation(Base):
     rainfall_24h_mm: Mapped[float] = mapped_column(Float)
     forecast_rainfall_mm: Mapped[float] = mapped_column(Float)
     observed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now_utc)
+
+
+class LogisticsFacility(Base):
+    __tablename__ = "logistics_facilities"
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    code: Mapped[str] = mapped_column(String(40), unique=True, index=True)
+    name: Mapped[str] = mapped_column(String(150))
+    node_name: Mapped[str] = mapped_column(String(80))
+    facility_type: Mapped[str] = mapped_column(String(40), default="RELIEF_HUB")
+    coordinates: Mapped[list] = mapped_column(JSON, default=list)
+    capacity_units: Mapped[int] = mapped_column(Integer, default=1000)
+    is_operational: Mapped[bool] = mapped_column(Boolean, default=True)
+
+
+class ResourceStock(Base):
+    __tablename__ = "resource_stocks"
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    facility_id: Mapped[str] = mapped_column(ForeignKey("logistics_facilities.id"), index=True)
+    resource_type: Mapped[str] = mapped_column(String(50), index=True)
+    quantity: Mapped[int] = mapped_column(Integer, default=0)
+    reorder_level: Mapped[int] = mapped_column(Integer, default=0)
+    unit: Mapped[str] = mapped_column(String(30), default="units")
+
+
+class DecisionEvent(Base):
+    __tablename__ = "decision_events"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    actor_email: Mapped[str] = mapped_column(String(255), index=True)
+    event_type: Mapped[str] = mapped_column(String(40), index=True)
+    entity_type: Mapped[str] = mapped_column(String(50))
+    entity_ref: Mapped[str] = mapped_column(String(100), index=True)
+    summary: Mapped[str] = mapped_column(String(240))
+    rationale: Mapped[str] = mapped_column(Text)
+    event_data: Mapped[dict] = mapped_column(JSON, default=dict)
+    previous_hash: Mapped[str] = mapped_column(String(64))
+    event_hash: Mapped[str] = mapped_column(String(64), unique=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now_utc, index=True)
