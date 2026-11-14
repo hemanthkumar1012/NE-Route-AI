@@ -1,10 +1,10 @@
-# NE-Route AI — v4 integration validation
+# NE-Route AI — v4 end-to-end integration validation
 
-**CI status: PASS**  
-GitHub Actions run: [NE-Route AI CI #43588463008](https://github.com/hemanthkumar1012/NE-Route-AI/actions/runs/43588463008)  
-Commit under test: `d37c2e764b03cf036aa2ca8752c3c982e2f1bd3f`
+**GitHub Actions: ALL JOBS PASSED**  
+CI run: [NE-Route AI CI #43588696127](https://github.com/hemanthkumar1012/NE-Route-AI/actions/runs/43588696127)  
+Commit: `2f59009556adc98e1ebfff19eadd8c606ac539bb`
 
-## Executed automated checks
+## Application test results
 
 | Suite | Result |
 |---|---:|
@@ -12,14 +12,23 @@ Commit under test: `d37c2e764b03cf036aa2ca8752c3c982e2f1bd3f`
 | ML pytest | 2 passed |
 | Frontend core Node tests | 5 passed |
 | React / Vitest component tests | 8 passed |
-| Frontend TypeScript + Vite production build | Passed |
-| GitHub Actions jobs | 2 / 2 passed |
+| TypeScript + Vite production build | Passed |
 
 **Total automated tests: 43 passed, 0 failed.**
 
-The latest commit adds production Nginx frontend packaging, same-origin API proxying, actual database / ML readiness probes, and the System Health & Diagnostics workspace.
+## Container validation results
 
-## Reproduce locally
+| Check | Result |
+|---|---:|
+| Docker Compose configuration | Passed |
+| FastAPI backend image build | Passed |
+| ML service image build | Passed |
+| Production Nginx frontend image build | Passed |
+| GitHub Actions jobs | 3 / 3 passed |
+
+The production frontend image serves the Vite bundle through Nginx and proxies `/api` and `/health` to FastAPI. The Vite development server uses matching proxies for local development.
+
+## Run locally
 
 ```bash
 cp .env.example .env
@@ -27,13 +36,17 @@ docker compose config
 docker compose up --build
 ```
 
-Then open `http://localhost:5173`, API docs at `http://localhost:8000/docs`, and backend readiness at `http://localhost:8000/health/ready`.
+Open:
+- Frontend: `http://localhost:5173`
+- API documentation: `http://localhost:8000/docs`
+- Backend liveness: `http://localhost:8000/health`
+- Backend readiness: `http://localhost:8000/health/ready`
+- ML health: `http://localhost:8100/health`
 
-## Validation boundaries
+## Remaining validation / security work
 
-- GitHub Actions verified Python tests, frontend tests, and the TypeScript/Vite production build.
-- Docker Compose image builds and a live PostgreSQL/PostGIS Compose startup were not included in run #43588463008; a separate Docker build / Compose validation job has now been added to CI.
-- CI's npm install previously reported 6 dependency advisories (3 moderate, 1 high and 2 critical). Review with `cd frontend && npm audit`; do not blindly apply `npm audit fix --force`.
-- Synthetic training labels and illustrative road / facility mappings do not establish real-world predictive accuracy or operational suitability.
+- CI built all images and validated the Compose configuration, but did not start the full containers against a live PostgreSQL/PostGIS instance.
+- npm reported 6 dependency advisories (3 moderate, 1 high and 2 critical). Review with `cd frontend && npm audit` before deployment. Do not apply `npm audit fix --force` blindly.
+- The road graph, depot inventory, GPS, weather and ML training labels are synthetic. They do not establish real-world prediction accuracy or safe navigation.
 
 All operational simulation data remains explicitly labeled synthetic. Dispatch, inventory release, road closure, public advisories and incident verification require real-world validation and authorized human action.
