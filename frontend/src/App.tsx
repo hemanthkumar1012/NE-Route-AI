@@ -5,14 +5,15 @@ import type { DashboardSummary, User } from './types';
 import LogisticsMap from './components/LogisticsMap';
 import RiskIntelligence from './components/RiskIntelligence';
 import MissionControl from './components/MissionControl';
+import DigitalTwin from './components/DigitalTwin';
 
-type Page = 'overview'|'map'|'routes'|'shipments'|'vehicles'|'incidents'|'alerts'|'copilot'|'risk'|'missions';
+type Page = 'overview'|'map'|'routes'|'shipments'|'vehicles'|'incidents'|'alerts'|'copilot'|'risk'|'missions'|'digital-twin';
 const nav: Array<{id:Page;label:string;icon:any;group:string}> = [
   {id:'overview',label:'Overview',icon:Command,group:'WORKSPACE'}, {id:'map',label:'Live map',icon:Map,group:'WORKSPACE'},
   {id:'routes',label:'Route planner',icon:Route,group:'WORKSPACE'}, {id:'shipments',label:'Shipments',icon:Package,group:'LOGISTICS'},
   {id:'vehicles',label:'Fleet tracking',icon:Truck,group:'LOGISTICS'}, {id:'incidents',label:'Incidents',icon:AlertTriangle,group:'FIELD INTELLIGENCE'},
   {id:'alerts',label:'Alert center',icon:Bell,group:'FIELD INTELLIGENCE'}, {id:'risk',label:'Risk intelligence',icon:Activity,group:'INTELLIGENCE'},
-  {id:'missions',label:'Mission control',icon:ClipboardList,group:'INTELLIGENCE'}, {id:'copilot',label:'AI copilot',icon:Bot,group:'INTELLIGENCE'},
+  {id:'missions',label:'Mission control',icon:ClipboardList,group:'INTELLIGENCE'}, {id:'digital-twin',label:'Digital twin & response',icon:Layers,group:'INTELLIGENCE'}, {id:'copilot',label:'AI copilot',icon:Bot,group:'INTELLIGENCE'},
 ];
 const demoSummary:DashboardSummary={data_mode:'SIMULATED',kpis:{active_incidents:2,blocked_routes:1,high_risk_corridors:3,vehicles_in_transit:2,delayed_shipments:1,open_alerts:2,districts_monitored:11},districts:[{name:'Dima Hasao',state:'Assam',accessibility_score:61},{name:'Cachar',state:'Assam',accessibility_score:68},{name:'Kohima',state:'Nagaland',accessibility_score:72},{name:'Imphal West',state:'Manipur',accessibility_score:84}]};
 
@@ -53,6 +54,7 @@ function App() { const [user,setUser]=useState<User|null>(null); const [page,set
  {page==='copilot'&&<div className="page-stack"><div className="page-heading"><div><span className="eyebrow">AI-ASSISTED OPERATIONS</span><h1>Logistics copilot</h1><p>Ask questions grounded in the platform's current synthetic data snapshot.</p></div></div><section className="panel copilot-panel"><div className="copilot-avatar"><Bot size={24}/></div><div className="copilot-intro"><h2>How can I help coordinate logistics?</h2><p>Ask about blocked corridors, high-risk roads, district incidents or delayed medicine deliveries.</p></div><textarea value={question} onChange={e=>setQuestion(e.target.value)}/><button className="button primary" onClick={ask}>Ask NE-Route AI <Bot size={16}/></button>{answer&&<div className="copilot-answer"><span className="eyebrow">ASSISTANT RESPONSE · {answer.data_mode}</span><p>{answer.answer}</p><small>Source: platform database snapshot. Verify operational information with authorized personnel.</small></div>}</section></div>}
  {page==='risk'&&<RiskIntelligence/>}
  {page==='missions'&&<MissionControl/>}
+ {page==='digital-twin'&&<DigitalTwin user={user}/>}
  </div></main>{toast&&<button className="toast" onClick={()=>setToast('')}>{toast} · Dismiss</button>}</div>;
 }
 export default App;
