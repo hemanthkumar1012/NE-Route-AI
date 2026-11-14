@@ -1,0 +1,42 @@
+name: NE-Route AI CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+jobs:
+  backend-and-ml:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: |
+          pip install -r backend/requirements.txt
+          pip install -r ml-service/requirements.txt
+      - name: Backend tests
+        run: pytest backend/tests -q
+      - name: ML tests
+        working-directory: ml-service
+        run: pytest tests -q
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm install
+      - name: Frontend core tests
+        working-directory: frontend
+        run: npm run test:core
+      - name: Component tests
+        working-directory: frontend
+        run: npm test
+      - name: Production build
+        working-directory: frontend
+        run: npm run build

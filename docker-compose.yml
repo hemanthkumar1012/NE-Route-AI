@@ -1,0 +1,74 @@
+services:
+  db:
+    image: postgis/postgis:16-3.4
+    container_name: ne-route-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-neroute}
+      POSTGRES_USER: ${POSTGRES_USER:-neroute}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-neroute_dev}
+    ports: ["5432:5432"]
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-neroute} -d ${POSTGRES_DB:-neroute}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+  ml-service:
+    build: ./ml-service
+    container_name: ne-route-ml
+    restart: unless-stopped
+    environment:
+      MODEL_ARTIFACT_DIR: /app/artifacts
+    ports: ["8100:8100"]
+    volumes:
+      - ml_artifacts:/app/artifacts
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8100/health', timeout=2)"]
+      interval: 10s
+      timeout: 3s
+      retries: 15
+  backend:
+    build: ./backend
+    container_name: ne-route-api
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-neroute}:${POSTGRES_PASSWORD:-neroute_dev}@db:5432/${POSTGRES_DB:-neroute}
+      JWT_SECRET: ${JWT_SECRET:-replace-with-a-long-random-secret-before-deployment}
+      FRONTEND_ORIGIN: ${FRONTEND_ORIGIN:-http://localhost:5173}
+      ML_SERVICE_URL: http://ml-service:8100
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_MODEL: ${OPENAI_MODEL:-gpt-4o-mini}
+      UPLOAD_DIR: /app/uploads
+      DEMO_MODE: ${DEMO_MODE:-true}
+    ports: ["8000:8000"]
+    volumes:
+      - incident_uploads:/app/uploads
+    depends_on:
+      db: {condition: service_healthy}
+      ml-service: {condition: service_started}
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health', timeout=2)"]
+      interval: 10s
+      timeout: 3s
+      retries: 20
+  frontend:
+    build: ./frontend
+    container_name: ne-route-frontend
+    restart: unless-stopped
+    environment:
+      VITE_API_URL: http://localhost:8000/api/v1
+    ports: ["5173:5173"]
+    depends_on:
+      backend: {condition: service_started}
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:5173"]
+      interval: 10s
+      timeout: 3s
+      retries: 15
+volumes:
+  postgres_data:
+  ml_artifacts:
+  incident_uploads:
