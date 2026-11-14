@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, within } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import OperationsBrief from './OperationsBrief';
 
@@ -33,19 +33,20 @@ describe('OperationsBrief', () => {
   });
 
   it('filters the shipment register by critical and delayed cargo', () => {
-    render(<OperationsBrief summary={summary} shipments={shipments} vehicles={vehicles} incidents={incidents} alerts={alerts} refreshedAt={null} onNavigate={vi.fn()} />);
-    fireEvent.click(screen.getByRole('button', { name: 'Critical' }));
-    expect(screen.getByText('MED-001')).toBeInTheDocument();
-    expect(screen.queryByText('FOOD-002')).not.toBeInTheDocument();
-    fireEvent.click(screen.getByRole('button', { name: 'Delayed' }));
-    expect(screen.getByText('FOOD-002')).toBeInTheDocument();
-    expect(screen.queryByText('MED-001')).not.toBeInTheDocument();
+    const view = render(<OperationsBrief summary={summary} shipments={shipments} vehicles={vehicles} incidents={incidents} alerts={alerts} refreshedAt={null} onNavigate={vi.fn()} />);
+    const filters = within(view.getByRole('group', { name: 'Filter shipment register' }));
+    fireEvent.click(filters.getByRole('button', { name: 'Critical' }));
+    expect(view.getByText('MED-001')).toBeInTheDocument();
+    expect(view.queryByText('FOOD-002')).not.toBeInTheDocument();
+    fireEvent.click(filters.getByRole('button', { name: 'Delayed' }));
+    expect(view.getByText('FOOD-002')).toBeInTheDocument();
+    expect(view.queryByText('MED-001')).not.toBeInTheDocument();
   });
 
   it('navigates to operational views from the metric cards', () => {
     const onNavigate = vi.fn();
-    render(<OperationsBrief summary={summary} shipments={shipments} vehicles={vehicles} incidents={incidents} alerts={alerts} refreshedAt={null} onNavigate={onNavigate} />);
-    fireEvent.click(screen.getByText('Open alerts'));
+    const view = render(<OperationsBrief summary={summary} shipments={shipments} vehicles={vehicles} incidents={incidents} alerts={alerts} refreshedAt={null} onNavigate={onNavigate} />);
+    fireEvent.click(view.getByRole('button', { name: /Open alerts/ }));
     expect(onNavigate).toHaveBeenCalledWith('alerts');
   });
 });
