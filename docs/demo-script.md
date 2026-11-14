@@ -1,15 +1,24 @@
-# Three-minute demo script
+# Three-minute demo script — Advanced NE-Route AI
 
-**0:00–0:25 — Problem.** Remote NER corridors can become isolated after heavy rain, slope failures and bridge damage. Officials need a shared picture of risk and essential-supply exposure.
+**0:00–0:20 — Problem and promise.** Remote and mountainous corridors can be disrupted by heavy rain, landslides and bridge damage. Officials need a common picture of road access, essential cargo and response options.
 
-**0:25–0:55 — Command center.** Sign in, show incident, blocked-route, high-risk corridor and vehicle KPIs. Point out the simulated-data banner.
+**0:20–0:45 — Command center.** Sign in and show regional KPIs, simulated incidents, shipment status and the light command-center interface. Explicitly identify the demo dataset as synthetic.
 
-**0:55–1:20 — Disruption.** Trigger the seeded landslide. Show the corridor closure and new alert; inspect the updated segment state.
+**0:45–1:10 — Incident cascade.** Open **Digital Twin & Strategic Response → Disaster Digital Twin**. Set a compound monsoon scenario and run it. Explain how the scenario-only road graph projects risk uplift, potential segment closures, critical medicine exposure, district accessibility impact and illustrative recovery trajectory. Show that baseline operational records are not modified.
 
-**1:20–1:50 — Route and cargo.** Compare fastest, safest and priority paths. Highlight the critical medicine shipment and why blocked segments are excluded.
+**1:10–1:35 — Relief pre-positioning.** Select medical kits and run the strategic resource staging plan. Explain how the heuristic weighs district need, available depot stock and risk-adjusted route time. Show supply gaps and restock suggestions; emphasize that the inventory is not decremented and no transfer order is created.
 
-**1:50–2:20 — AI and resilience.** Open Risk Intelligence, explain rainfall / slope / incident drivers, run a non-persistent rainfall scenario and show exposed cargo.
+**1:35–1:55 — Field signal fusion.** Open incident fusion. Show any candidate spatial-temporal report clusters and source corroboration values. Explain that similarity prioritizes verification and does not auto-merge or reject reports.
 
-**2:20–2:45 — Mission Control.** Optimize several relief stops and generate the landslide response playbook. Mention that route and response decisions remain subject to authorized approval.
+**1:55–2:20 — Decision governance.** Create a proposal based on the scenario. Switch to a different authorized demo account to approve or reject it. Verify the SHA-256 journal chain and explain that an approval event records a governance decision only; it does not dispatch a vehicle or release stock.
 
-**2:45–3:00 — Impact.** Explain the pathway to official road data, weather feeds, district workflows, offline reporting and validated regional models. Synthetic demo values are not operational claims.
+**2:20–2:45 — Route and AI copilot.** Show fastest / safest / priority routing after a disruption, then ask the copilot which medicine shipments are delayed. Point out that answers are grounded in the platform snapshot and marked simulated.
+
+**2:45–3:00 — Impact and roadmap.** Summarize the value: earlier visibility of cascade effects, better relief resource positioning, less duplicate-report noise and traceable decisions. Outline the next step: connect authorized road, district, weather and logistics datasets and validate models with field agencies.
+
+## Presenter guardrails
+
+- Do not present synthetic risk, depot stocks, incident reports, GPS, ETAs or recovery windows as live information.
+- Do not claim that model metrics on synthetic labels demonstrate real-world forecast accuracy.
+- Do not describe a route recommendation as an official dispatch order.
+- All road closures, resource movements, advisories and incident verification require competent authority and field validation.
