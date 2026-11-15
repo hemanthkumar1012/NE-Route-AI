@@ -1,9 +1,9 @@
 # NE-Route AI
 
 **Intelligent Logistics & Accessibility Command Center for North East India**  
-SIH 2026 · Problem Statement SIH26002 · Prototype implementation
+Personal full-stack project · Prototype implementation
 
-NE-Route AI is a hackathon-ready decision-support prototype for visualizing simulated road disruption, assessing corridor risk, comparing route alternatives, tracking synthetic essential-supply shipments, and coordinating field incident reports.
+NE-Route AI is a decision-support prototype for visualizing simulated road disruption, assessing corridor risk, comparing route alternatives, tracking synthetic essential-supply shipments, and coordinating field incident reports.
 
 > **Important:** This repository is a demonstration system. Its road graph, GPS positions, rainfall features, incidents, shipments, risk training data and displayed operational conditions are synthetic. The OpenStreetMap layer is a basemap; the overlaid route geometry is not authoritative. Do not use these routes, risk scores, or ETA values for real-world dispatch. No restricted government data is accessed.
 
