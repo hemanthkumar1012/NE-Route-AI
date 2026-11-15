@@ -23,19 +23,22 @@ def _snapshot(db):
 def answer_question(question: str, db):
     facts = _snapshot(db)
     q = question.lower()
-    if settings.openai_api_key:
+    if settings.gemini_api_key:
         try:
-            from openai import OpenAI
-            client = OpenAI(api_key=settings.openai_api_key)
-            response = client.chat.completions.create(
-                model=settings.openai_model,
-                temperature=0.1,
-                messages=[
-                    {"role": "system", "content": "You are NE-Route AI logistics copilot. Answer only from the supplied JSON platform snapshot. It is synthetic demo data, never claim it is live or official. State when a requested fact is unavailable. Do not issue dispatch commands; recommend human review."},
-                    {"role": "user", "content": f"Question: {question}\nPlatform snapshot: {json.dumps(facts)}"},
-                ],
+            import httpx
+            response = httpx.post(
+                f"https://generativelanguage.googleapis.com/v1beta/models/{settings.gemini_model}:generateContent",
+                headers={"x-goog-api-key": settings.gemini_api_key, "Content-Type": "application/json"},
+                json={
+                    "system_instruction": {"parts": [{"text": "You are NE-Route AI logistics copilot. Answer only from the supplied JSON platform snapshot. It is synthetic demo data, never claim it is live or official. State when a requested fact is unavailable. Do not issue dispatch commands; recommend human review."}]},
+                    "contents": [{"role": "user", "parts": [{"text": f"Question: {question}\nPlatform snapshot: {json.dumps(facts)}"}]}],
+                    "generationConfig": {"temperature": 0.1},
+                },
+                timeout=30,
             )
-            return {"answer": response.choices[0].message.content, "data_mode": "SIMULATED", "sources": ["platform database snapshot"]}
+            response.raise_for_status()
+            answer = response.json()["candidates"][0]["content"]["parts"][0]["text"]
+            return {"answer": answer, "data_mode": "SIMULATED", "sources": ["platform database snapshot"]}
         except Exception:
             pass
     if any(w in q for w in ("blocked", "closed", "inaccessible")):

@@ -21,7 +21,7 @@ NE-Route AI is a decision-support prototype for visualizing simulated road disru
 - Fastest, safest and cargo-priority route scoring using NetworkX.
 - Shipment and vehicle APIs, alerts and incident verification workflow.
 - WebSocket simulated GPS movement.
-- Platform-grounded copilot with deterministic fallback and optional OpenAI API connection.
+- Platform-grounded copilot with deterministic fallback and optional Google Gemini API connection.
 - Operations-wide CSV export, risk distribution and explainability panel, fleet GPS freshness monitoring, prioritized response recommendations, platform readiness reporting and non-persistent rainfall / bridge stress-test scenarios.
 - Incident image upload storage. Vision classification intentionally returns manual-review-required until a trained, validated classifier is installed.
 - Disaster Digital Twin: non-persistent compound-hazard stress tests, network fragmentation, cascading shipment impact, district accessibility loss and illustrative recovery trajectories.

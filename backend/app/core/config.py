@@ -10,8 +10,8 @@ class Settings(BaseSettings):
     access_token_minutes: int = 720
     frontend_origin: str = "http://localhost:5173"
     ml_service_url: str = "http://ml-service:8100"
-    openai_api_key: str = ""
-    openai_model: str = "gpt-4o-mini"
+    gemini_api_key: str = ""
+    gemini_model: str = "gemini-2.0-flash"
     upload_dir: str = "/app/uploads"
     demo_mode: bool = False
     initial_admin_email: str = ""
