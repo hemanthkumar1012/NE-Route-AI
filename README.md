@@ -134,7 +134,14 @@ All application endpoints use `/api/v1` and require `Authorization: Bearer <toke
 | GET | `/system/readiness` | API, ML, weather, notification and human-approval readiness |
 | POST | `/demo/trigger-disruption` | Trigger seeded landslide scenario |
 | POST | `/demo/reset` | Restore simulated closure state while retaining history |
-| POST | `/advanced/digital-twin/run` | Compound disruption digital twin and cascading impact projection |\n| POST | `/advanced/resource-staging/plan` | Risk-adjusted multi-hub relief allocation proposal |\n| GET | `/advanced/incident-fusion/analyze` | Spatial-temporal duplicate candidate and corroboration analysis |\n| POST | `/advanced/decisions/propose` | Record an operational proposal for independent review |\n| POST | `/advanced/decisions/{proposal_id}/review` | Append an authorized approval / rejection event |\n| GET | `/advanced/decisions` | Decision proposal and review history |\n| GET | `/advanced/decisions/integrity` | Verify SHA-256 journal chain |\n| WS | `/api/v1/ws/live?token=...` | Simulated GPS updates |
+| POST | `/advanced/digital-twin/run` | Compound disruption digital twin and cascading impact projection |
+| POST | `/advanced/resource-staging/plan` | Risk-adjusted multi-hub relief allocation proposal |
+| GET | `/advanced/incident-fusion/analyze` | Spatial-temporal duplicate candidate and corroboration analysis |
+| POST | `/advanced/decisions/propose` | Record an operational proposal for independent review |
+| POST | `/advanced/decisions/{proposal_id}/review` | Append an authorized approval / rejection event |
+| GET | `/advanced/decisions` | Decision proposal and review history |
+| GET | `/advanced/decisions/integrity` | Verify SHA-256 journal chain |
+| WS | `/api/v1/ws/live?token=...` | Simulated GPS updates |
 
 ## Example API calls
 
@@ -170,14 +177,23 @@ The **Mission Control** workspace adds a multi-stop delivery optimizer. It compu
 
 The **Risk Intelligence** workspace includes: network resilience heuristic, current risk-band distribution, ranked corridor exposure with feature-driver explanations, medicine / critical cargo exposure, last-GPS freshness checks, a prioritized response queue, service-readiness inventory, non-persistent rainfall and bridge-vulnerability stress tests, and combined operations CSV export. Scenario projections do not alter stored operational state.
 
-## Digital Twin & Strategic Response\n\nThe advanced workspace connects four capabilities: (1) non-persistent disaster digital-twin scenarios that calculate cascading road, shipment and district effects; (2) resource pre-positioning recommendations from synthetic regional hubs; (3) spatial-temporal incident corroboration to surface possible duplicate reports; and (4) an append-only, hash-chained decision journal with independent reviewer controls. See [Advanced Operations documentation](docs/advanced-operations.md).\n\nThese features are decision-support prototypes. They do not issue official road closures, dispatch vehicles, move inventory, publish public alerts or automatically merge reports. The road graph, facility stocks and scenario parameters are synthetic.\n\n## Tests\n
+## Digital Twin & Strategic Response
+
+The advanced workspace connects four capabilities: (1) non-persistent disaster digital-twin scenarios that calculate cascading road, shipment and district effects; (2) resource pre-positioning recommendations from synthetic regional hubs; (3) spatial-temporal incident corroboration to surface possible duplicate reports; and (4) an append-only, hash-chained decision journal with independent reviewer controls. See [Advanced Operations documentation](docs/advanced-operations.md).
+
+These features are decision-support prototypes. They do not issue official road closures, dispatch vehicles, move inventory, publish public alerts or automatically merge reports. The road graph, facility stocks and scenario parameters are synthetic.
+
+## Tests
+
 Install backend and ML dependencies using the Dockerfiles or a Python virtual environment. Run:
 
 ```bash
 make test
 ```
 
-This runs backend unit/service/schema tests, ML synthetic-data training tests and dependency-free frontend core tests. With the backend running at `http://localhost:8000`, run the Vite frontend in development mode with `cd frontend && npm install && npm run dev`. Vite proxies `/api` and `/health` to FastAPI. For the production container stack, use the Docker Compose command above.\n\nWith frontend npm dependencies installed, run:
+This runs backend unit/service/schema tests, ML synthetic-data training tests and dependency-free frontend core tests. With the backend running at `http://localhost:8000`, run the Vite frontend in development mode with `cd frontend && npm install && npm run dev`. Vite proxies `/api` and `/health` to FastAPI. For the production container stack, use the Docker Compose command above.
+
+With frontend npm dependencies installed, run:
 
 ```bash
 cd frontend
@@ -186,7 +202,9 @@ npm test
 npm run build
 ```
 
-`make test-full` runs all suites when frontend dependencies are installed. The latest [GitHub Actions CI run](https://github.com/hemanthkumar1012/NE-Route-AI/actions/runs/43589700170) passed: 32 backend tests, 2 ML tests, 5 frontend core tests, 8 React component tests, the Vite production build, Docker Compose configuration validation, and backend / ML / frontend Docker image builds (47 tests total). The Vercel FastAPI entrypoint import also passed. See [Vercel + Supabase test results](TEST_RESULTS_ADVANCED.md). A live Supabase database connection and hosted Vercel deployment have not yet been configured.\n\n**Dependency security note:** the CI `npm install` audit summary reported 6 advisories (3 moderate, 1 high, 2 critical). Run `cd frontend && npm audit` and review the affected dependency paths before deployment. Avoid applying `npm audit fix --force` without checking for breaking upgrades.
+`make test-full` runs all suites when frontend dependencies are installed. The latest [GitHub Actions CI run](https://github.com/hemanthkumar1012/NE-Route-AI/actions/runs/43589700170) passed: 32 backend tests, 2 ML tests, 5 frontend core tests, 8 React component tests, the Vite production build, Docker Compose configuration validation, and backend / ML / frontend Docker image builds (47 tests total). The Vercel FastAPI entrypoint import also passed. See [Vercel + Supabase test results](TEST_RESULTS_ADVANCED.md). A live Supabase database connection and hosted Vercel deployment have not yet been configured.
+
+**Dependency security note:** the CI `npm install` audit summary reported 6 advisories (3 moderate, 1 high, 2 critical). Run `cd frontend && npm audit` and review the affected dependency paths before deployment. Avoid applying `npm audit fix --force` without checking for breaking upgrades.
 
 ## Data and deployment safety
 
