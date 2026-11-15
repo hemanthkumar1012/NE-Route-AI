@@ -4,7 +4,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 from app.core.security import hash_password
 from app.models.entities import Alert, District, Incident, RoadSegment, Shipment, User, Vehicle, WeatherObservation, LogisticsFacility, ResourceStock
-from app.regions import GLOBAL_REGIONS, DEFAULT_STOCK
+from app.regions import GLOBAL_REGIONS, DEFAULT_STOCK, INTER_REGION_LINKS
 
 DISTRICTS = [
     ("Kamrup Metropolitan", "Assam", 88, [91.7362, 26.1445]), ("Dima Hasao", "Assam", 61, [93.0176, 25.3478]),
@@ -68,6 +68,14 @@ def seed_database(db: Session):
             historical_incidents_30d=max(0, risk // 15), traffic_index=min(.9, risk / 100),
             road_condition_score=max(.2, 1 - risk / 125), bridge_vulnerability=min(.95, slope / 35),
             coordinates=[NODES[a], NODES[b]]))
+    for a, b, name, mode, distance, eta, risk in INTER_REGION_LINKS:
+        db.add(RoadSegment(external_id=f"LNK-{mode}-{a[:3].upper()}-{b[:3].upper()}", name=name,
+            from_node=a, to_node=b, distance_km=distance, base_eta_minutes=eta, risk_score=risk,
+            risk_level="SAFE" if risk < 35 else "CAUTION",
+            terrain="AIR_CORRIDOR" if mode == "AIR" else "SEA_LANE", slope_percent=0,
+            elevation_m=10000 if mode == "AIR" else 0, rainfall_24h_mm=0, forecast_rainfall_mm=0,
+            historical_incidents_30d=0, traffic_index=.1, road_condition_score=1.0,
+            bridge_vulnerability=0, coordinates=[NODES[a], NODES[b]]))
     now = datetime.now(timezone.utc)
     db.add_all([
         WeatherObservation(district_name="Dima Hasao", rainfall_24h_mm=142, forecast_rainfall_mm=86, observed_at=now),

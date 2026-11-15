@@ -47,7 +47,7 @@ def options_for(segments, origin, destination, cargo_priority="NORMAL"):
         if not path:
             output.append({"objective": objective, "available": False, "segments": [], "distance_km": 0, "eta_minutes": None, "mean_risk_score": None, "max_risk_score": None})
             continue
-        output.append({"objective": objective, "available": True, "segments": [{"id": s.external_id, "name": s.name, "risk_score": s.risk_score, "distance_km": s.distance_km, "status": s.operational_status} for s in path],
+        output.append({"objective": objective, "available": True, "segments": [{"id": s.external_id, "name": s.name, "risk_score": s.risk_score, "distance_km": s.distance_km, "status": s.operational_status, "mode": {"AIR_CORRIDOR": "AIR", "SEA_LANE": "SEA"}.get(getattr(s, "terrain", ""), "ROAD")} for s in path],
             "distance_km": round(sum(s.distance_km for s in path), 2),
             "eta_minutes": sum(s.base_eta_minutes for s in path),
             "mean_risk_score": round(sum(s.risk_score for s in path) / len(path), 1),

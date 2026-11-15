@@ -11,7 +11,8 @@ NE-Route AI is a decision-support prototype for visualizing simulated road disru
 
 - Global multi-region network: North East India plus East Africa (Mombasa–Nairobi–Kampala–Juba), Southeast Asia (Bangkok–Phnom Penh–HCMC–Hanoi–Yangon) and Andes (Lima–Cusco–Arequipa–La Paz) region packs, each with its own synthetic road graph, districts, weather features, hubs, shipments and vehicles (`backend/app/regions.py`).
 - World-view Leaflet map with a region switcher (World / NE India / East Africa / Southeast Asia / Andes) that flies to each corridor network.
-- Route planner and mission optimizer operate across every region; regions are separate graph components, so cross-region requests correctly report no viable road route instead of inventing intercontinental roads.
+- Multimodal intercontinental routing: synthetic humanitarian air bridges (Guwahati–Bangkok, Bangkok–Nairobi, Nairobi–Lima) and sea lanes (Mombasa–HCMC, Callao–Mombasa) connect the regional road graphs into one routable world network. Cross-region plans combine road, air and sea legs — e.g. Guwahati → Juba resolves to two air bridges plus the Nairobi–Kampala–Juba road corridors — and each route leg is labeled ROAD, AIR or SEA.
+- Map renders air bridges and sea lanes as dashed blue/cyan lines with mode-labeled popups and legend entries.
 - White / light-red React + TypeScript command-center UI with a dedicated Predictive Risk Intelligence workspace.
 - FastAPI backend with JWT authentication and role checks.
 - PostgreSQL + PostGIS persistence for roads, incidents, vehicles, and report locations.

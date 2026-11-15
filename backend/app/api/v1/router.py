@@ -109,7 +109,7 @@ def map_geojson(db: Session = Depends(get_db), user: User = Depends(current_user
     for segment in db.scalars(select(RoadSegment)):
         features.append({"type": "Feature", "geometry": {"type": "LineString", "coordinates": segment.coordinates},
             "properties": {"id": str(segment.id), "name": segment.name, "risk_score": segment.risk_score,
-                "risk_level": segment.risk_level, "status": segment.operational_status, "kind": "road", "data_mode": "SIMULATED"}})
+                "risk_level": segment.risk_level, "status": segment.operational_status, "terrain": segment.terrain, "kind": "road", "data_mode": "SIMULATED"}})
     for incident in db.scalars(select(Incident)):
         features.append({"type": "Feature", "geometry": {"type": "Point", "coordinates": incident.coordinates},
             "properties": {"id": str(incident.id), "type": incident.incident_type, "severity": incident.severity,

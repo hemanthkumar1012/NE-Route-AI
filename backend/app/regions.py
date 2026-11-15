@@ -141,6 +141,21 @@ ANDES = {
 
 GLOBAL_REGIONS = [EAST_AFRICA, SOUTHEAST_ASIA, ANDES]
 
+# ---------------------------------------------------------------------------
+# Multimodal inter-region links: humanitarian air bridges and sea lanes.
+# These connect the regional road graphs into one routable world network.
+# (node_a, node_b, name, mode, distance_km, eta_minutes, risk_score)
+# Mode becomes the segment terrain: AIR_CORRIDOR or SEA_LANE. ETAs include
+# illustrative handling/transfer time; all values are synthetic.
+# ---------------------------------------------------------------------------
+INTER_REGION_LINKS = [
+    ("Guwahati", "Bangkok", "Guwahati–Bangkok Humanitarian Air Bridge", "AIR", 1880, 300, 12),
+    ("Bangkok", "Nairobi", "Bangkok–Nairobi Strategic Air Bridge", "AIR", 7300, 660, 15),
+    ("Nairobi", "Lima", "Nairobi–Lima Transoceanic Air Bridge", "AIR", 12800, 1080, 18),
+    ("Mombasa", "Ho Chi Minh City", "Mombasa–HCMC Indian Ocean Sea Lane", "SEA", 7900, 12960, 22),
+    ("Lima", "Mombasa", "Callao–Mombasa Transoceanic Sea Lane", "SEA", 17000, 28800, 25),
+]
+
 DEFAULT_STOCK = {
     "REGIONAL_HUB": {"MEDICAL_KITS": (700, 160, "kits"), "FOOD_PACKS": (2100, 450, "packs"), "RELIEF_KITS": (1100, 240, "kits"), "ROAD_REPAIR_KITS": (380, 85, "kits"), "FUEL_LITERS": (16000, 3200, "liters")},
     "RELIEF_HUB": {"MEDICAL_KITS": (300, 95, "kits"), "FOOD_PACKS": (1100, 230, "packs"), "RELIEF_KITS": (650, 150, "kits"), "ROAD_REPAIR_KITS": (190, 55, "kits"), "FUEL_LITERS": (7000, 1400, "liters")},

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Polyline, CircleMarker, Popup, useMap } from 'react-leaflet';
 import type { LatLngExpression } from 'leaflet';
 
-type Props = { segments?: Array<{name:string;coordinates:number[][];risk_score:number;status:string}>; incidents?: Array<{name:string;coordinates:[number,number];severity:string}> };
+type Props = { segments?: Array<{name:string;coordinates:number[][];risk_score:number;status:string;terrain?:string}>; incidents?: Array<{name:string;coordinates:[number,number];severity:string}> };
 
 export const REGIONS: Array<{key:string;label:string;center:[number,number];zoom:number}> = [
   { key: 'WORLD', label: 'World view', center: [18, 60], zoom: 3 },
@@ -28,7 +28,12 @@ export default function LogisticsMap({ segments = [], incidents = [] }: Props) {
     <MapContainer center={region.center as LatLngExpression} zoom={region.zoom} scrollWheelZoom className="leaflet-map">
       <RegionFlyTo region={region} />
       <TileLayer attribution='&copy; OpenStreetMap contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-      {segments.map(s => <Polyline key={s.name} positions={s.coordinates.map(([lng,lat]) => [lat,lng] as [number,number])} pathOptions={{color:palette(s.risk_score,s.status),weight:5,opacity:.85}}><Popup>{s.name} · Risk {s.risk_score} · {s.status} · SIMULATED</Popup></Polyline>)}
+      {segments.map(s => {
+        const multimodal = s.terrain === 'AIR_CORRIDOR' || s.terrain === 'SEA_LANE';
+        const color = multimodal ? (s.terrain === 'AIR_CORRIDOR' ? '#2563eb' : '#0891b2') : palette(s.risk_score, s.status);
+        const modeLabel = s.terrain === 'AIR_CORRIDOR' ? 'AIR BRIDGE' : s.terrain === 'SEA_LANE' ? 'SEA LANE' : 'ROAD';
+        return <Polyline key={s.name} positions={s.coordinates.map(([lng,lat]) => [lat,lng] as [number,number])} pathOptions={{color,weight:multimodal?3:5,opacity:.85,dashArray:multimodal?'10 8':undefined}}><Popup>{s.name} · {modeLabel} · Risk {s.risk_score} · {s.status} · SIMULATED</Popup></Polyline>;
+      })}
       {incidents.map(i => <CircleMarker key={i.name} center={[i.coordinates[1],i.coordinates[0]]} radius={8} pathOptions={{color:'#b91c1c',fillColor:'#fca5a5',fillOpacity:.9}}><Popup>{i.name} · {i.severity}</Popup></CircleMarker>)}
     </MapContainer>
   </div>;
