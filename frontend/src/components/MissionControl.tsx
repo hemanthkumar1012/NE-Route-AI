@@ -9,6 +9,12 @@ const stops = [
   {name:'Silchar Supply Depot',node:'Silchar',priority:'NORMAL'},
   {name:'Aizawl Community Store',node:'Aizawl',priority:'HIGH'},
   {name:'Shillong Relief Point',node:'Shillong',priority:'NORMAL'},
+  {name:'Nairobi Field Hospital',node:'Nairobi',priority:'CRITICAL'},
+  {name:'Kampala Relief Point',node:'Kampala',priority:'HIGH'},
+  {name:'Juba Emergency Depot',node:'Juba',priority:'CRITICAL'},
+  {name:'Phnom Penh Supply Point',node:'Phnom Penh',priority:'NORMAL'},
+  {name:'Hanoi Medical Store',node:'Hanoi',priority:'HIGH'},
+  {name:'Cusco Highland Clinic',node:'Cusco',priority:'CRITICAL'},
 ];
 
 export default function MissionControl() {
@@ -30,7 +36,7 @@ export default function MissionControl() {
     {error && <div className="notice warning">{error}</div>}
     <div className="two-column mission-columns">
       <section className="panel"><div className="panel-head"><div><span className="eyebrow">MULTI-STOP LOGISTICS</span><h2>Relief mission optimizer</h2></div><Route size={20}/></div>
-        <label className="field-label">Mission origin<select value={origin} onChange={e=>setOrigin(e.target.value)}>{['Guwahati','Dimapur','Silchar','Shillong'].map(x=><option key={x}>{x}</option>)}</select></label>
+        <label className="field-label">Mission origin<select value={origin} onChange={e=>setOrigin(e.target.value)}>{['Guwahati','Dimapur','Silchar','Shillong','Mombasa','Nairobi','Kampala','Bangkok','Phnom Penh','Hanoi','Lima','Cusco'].map(x=><option key={x}>{x}</option>)}</select></label>
         <label className="field-label">Cargo priority<select value={priority} onChange={e=>setPriority(e.target.value)}>{['CRITICAL','HIGH','NORMAL','LOW'].map(x=><option key={x}>{x}</option>)}</select></label>
         <div className="field-label">Delivery destinations <span className="muted">Choose up to six stops</span></div>
         <div className="stop-picker">{stops.map(s=><label className="stop-option" key={s.name}><input type="checkbox" checked={selected.includes(s.name)} onChange={e=>setSelected(old=>e.target.checked?[...old,s.name]:old.filter(x=>x!==s.name))}/><span><b>{s.name}</b><small>{s.node} · {s.priority}</small></span><MapPin size={16}/></label>)}</div>

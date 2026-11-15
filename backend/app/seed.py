@@ -4,6 +4,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 from app.core.security import hash_password
 from app.models.entities import Alert, District, Incident, RoadSegment, Shipment, User, Vehicle, WeatherObservation, LogisticsFacility, ResourceStock
+from app.regions import GLOBAL_REGIONS, DEFAULT_STOCK
 
 DISTRICTS = [
     ("Kamrup Metropolitan", "Assam", 88, [91.7362, 26.1445]), ("Dima Hasao", "Assam", 61, [93.0176, 25.3478]),
@@ -36,6 +37,14 @@ EDGES = [
     ("Guwahati", "Agartala", "Guwahati–Agartala Corridor", 550, 660, 28, 9),
     ("Guwahati", "Dimapur", "Guwahati–Dimapur Corridor", 270, 335, 78, 22),
 ]
+
+# Merge worldwide region packs into the active graph. Regions are disconnected
+# components of one global network; the route planner reports cross-region
+# requests as unreachable rather than inventing intercontinental roads.
+for _region in GLOBAL_REGIONS:
+    NODES.update(_region["nodes"])
+    EDGES.extend(_region["edges"])
+    DISTRICTS.extend(_region["districts"])
 
 
 def seed_database(db: Session):
@@ -85,6 +94,19 @@ def seed_database(db: Session):
         Alert(title="Heavy rainfall watch: Dima Hasao", message="Synthetic rainfall features indicate elevated corridor exposure. Verify field conditions.",
             severity="WARNING", status="OPEN", entity_type="DISTRICT", entity_id="Dima Hasao"),
     ])
+    for region in GLOBAL_REGIONS:
+        for district_name, rain, forecast in region["weather"]:
+            db.add(WeatherObservation(district_name=district_name, rainfall_24h_mm=rain, forecast_rainfall_mm=forecast, observed_at=now))
+        for code, driver, status, speed, node, shipment_code in region["vehicles"]:
+            db.add(Vehicle(vehicle_code=code, driver_name=driver, status=status, speed_kmph=speed,
+                coordinates=NODES[node], shipment_code=shipment_code,
+                gps_at=now if status != "DELAYED" else now - timedelta(minutes=18)))
+        for code, cargo, priority, origin, destination, status, eta, vehicle_code, deadline in region["shipments"]:
+            db.add(Shipment(shipment_code=code, cargo_type=cargo, priority=priority, origin=origin,
+                destination=destination, status=status, eta_minutes=eta, vehicle_code=vehicle_code,
+                deadline_minutes=deadline))
+    db.add(Alert(title="Monsoon exposure watch: Yangon Region", message="Synthetic rainfall features indicate elevated corridor exposure on the Bangkok–Yangon corridor. Verify field conditions.",
+        severity="WARNING", status="OPEN", entity_type="DISTRICT", entity_id="Yangon Region"))
     db.commit()
 
 
@@ -113,6 +135,10 @@ def seed_advanced_data(db: Session):
         "SHL-DEPOT": {"MEDICAL_KITS": (180, 70, "kits"), "FOOD_PACKS": (700, 180, "packs"), "RELIEF_KITS": (360, 100, "kits"), "ROAD_REPAIR_KITS": (150, 45, "kits"), "FUEL_LITERS": (5000, 1100, "liters")},
         "IMF-MED": {"MEDICAL_KITS": (420, 120, "kits"), "FOOD_PACKS": (600, 160, "packs"), "RELIEF_KITS": (400, 110, "kits"), "ROAD_REPAIR_KITS": (95, 45, "kits"), "FUEL_LITERS": (3900, 1000, "liters")},
     }
+    for region in GLOBAL_REGIONS:
+        for code, name, node, facility_type, coordinates, capacity in region["facilities"]:
+            facilities.append((code, name, node, facility_type, coordinates, capacity))
+            stock_profiles[code] = DEFAULT_STOCK[facility_type]
     existing_codes = set(db.scalars(select(LogisticsFacility.code)))
     created = {}
     for code, name, node, facility_type, coordinates, capacity in facilities:

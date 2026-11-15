@@ -1,14 +1,17 @@
 # NE-Route AI
 
-**Intelligent Logistics & Accessibility Command Center for North East India**  
+**Intelligent Logistics & Accessibility Command Center — North East India and worldwide humanitarian corridors**  
 Personal full-stack project · Prototype implementation
 
-NE-Route AI is a decision-support prototype for visualizing simulated road disruption, assessing corridor risk, comparing route alternatives, tracking synthetic essential-supply shipments, and coordinating field incident reports.
+NE-Route AI is a decision-support prototype for visualizing simulated road disruption, assessing corridor risk, comparing route alternatives, tracking synthetic essential-supply shipments, and coordinating field incident reports. It began as a North East India command center and now ships with global region packs — East Africa, Southeast Asia and the Andes — on one multi-region world map.
 
 > **Important:** This repository is a demonstration system. Its road graph, GPS positions, rainfall features, incidents, shipments, risk training data and displayed operational conditions are synthetic. The OpenStreetMap layer is a basemap; the overlaid route geometry is not authoritative. Do not use these routes, risk scores, or ETA values for real-world dispatch. No restricted government data is accessed.
 
 ## What is implemented
 
+- Global multi-region network: North East India plus East Africa (Mombasa–Nairobi–Kampala–Juba), Southeast Asia (Bangkok–Phnom Penh–HCMC–Hanoi–Yangon) and Andes (Lima–Cusco–Arequipa–La Paz) region packs, each with its own synthetic road graph, districts, weather features, hubs, shipments and vehicles (`backend/app/regions.py`).
+- World-view Leaflet map with a region switcher (World / NE India / East Africa / Southeast Asia / Andes) that flies to each corridor network.
+- Route planner and mission optimizer operate across every region; regions are separate graph components, so cross-region requests correctly report no viable road route instead of inventing intercontinental roads.
 - White / light-red React + TypeScript command-center UI with a dedicated Predictive Risk Intelligence workspace.
 - FastAPI backend with JWT authentication and role checks.
 - PostgreSQL + PostGIS persistence for roads, incidents, vehicles, and report locations.
@@ -75,7 +78,7 @@ NE-Route AI is a decision-support prototype for visualizing simulated road disru
    - Backend readiness (database + ML): http://localhost:8000/health/ready
    - ML health: http://localhost:8100/health
 
-The first ML startup generates and trains a synthetic Random Forest model. The API creates relational tables and seeds the synthetic demonstration dataset when `DEMO_MODE=true`. PostGIS is enabled when the database supports it, but the current prototype can start without the extension because coordinates are stored as JSON. The frontend is built as a production static bundle and Nginx proxies `/api` and `/health` to FastAPI. The Vite development server also proxies those paths to the local API. First startup can take several minutes depending on network and hardware.
+The first ML startup generates and trains a synthetic Random Forest model. The API creates relational tables and seeds the synthetic demonstration dataset (all world regions included) when `DEMO_MODE=true`. Seeding is skipped when users already exist, so an existing demo database must be recreated (`docker compose down -v`) to pick up newly added regions. PostGIS is enabled when the database supports it, but the current prototype can start without the extension because coordinates are stored as JSON. The frontend is built as a production static bundle and Nginx proxies `/api` and `/health` to FastAPI. The Vite development server also proxies those paths to the local API. First startup can take several minutes depending on network and hardware.
 
 ## Demo accounts
 
