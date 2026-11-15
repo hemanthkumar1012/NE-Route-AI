@@ -20,9 +20,35 @@ def _snapshot(db):
     }
 
 
+def _route_intent(question: str, db):
+    """Detect 'how do I get X to Y' style questions, resolve the named network
+    nodes and run the multimodal route planner as a copilot tool."""
+    from app.seed import NODES
+    from app.routing.optimizer import options_for
+    q = question.lower()
+    mentioned = sorted((n for n in NODES if n.lower() in q), key=lambda n: q.index(n.lower()))
+    if len(mentioned) < 2:
+        return None
+    if not any(w in q for w in ("route", "get", "deliver", "send", "ship", "move", "transport", "from", "reach", "fastest", "cheapest", "way")):
+        return None
+    origin, destination = mentioned[0], mentioned[1]
+    priority = "CRITICAL" if any(w in q for w in ("critical", "medical", "medicine", "urgent", "emergency")) else "NORMAL"
+    segments = list(db.scalars(select(RoadSegment)))
+    options = [o for o in options_for(segments, origin, destination, priority) if o["available"]]
+    if not options:
+        return {"origin": origin, "destination": destination, "options": []}
+    return {"origin": origin, "destination": destination, "priority": priority,
+            "options": [{"objective": o["objective"], "eta_minutes": o["eta_minutes"], "distance_km": o["distance_km"],
+                         "cost_usd": o["cost_usd"], "co2_kg": o["co2_kg"], "mean_risk": o["mean_risk_score"],
+                         "legs": [f"{s['name']} [{s['mode']}]" for s in o["segments"]]} for o in options]}
+
+
 def answer_question(question: str, db):
     facts = _snapshot(db)
     q = question.lower()
+    route_plan = _route_intent(question, db)
+    if route_plan is not None:
+        facts["route_plan"] = route_plan
     if settings.gemini_api_key:
         try:
             import httpx
@@ -41,6 +67,16 @@ def answer_question(question: str, db):
             return {"answer": answer, "data_mode": "SIMULATED", "sources": ["platform database snapshot"]}
         except Exception:
             pass
+    if route_plan is not None:
+        if not route_plan["options"]:
+            answer = f"No viable multimodal route between {route_plan['origin']} and {route_plan['destination']} in the current simulated network snapshot."
+        else:
+            best = route_plan["options"][0]
+            lines = [f"{o['objective']}: {o['eta_minutes']} min · {o['distance_km']} km · ${o['cost_usd']} · {o['co2_kg']} kg CO2 · risk {o['mean_risk']}/100" for o in route_plan["options"]]
+            answer = (f"Simulated multimodal plan {route_plan['origin']} → {route_plan['destination']} ({route_plan.get('priority','NORMAL')} cargo). "
+                      f"Recommended ({best['objective']}): {' → '.join(best['legs'])}. Options — " + "; ".join(lines) +
+                      ". All figures are synthetic demo values; require human dispatch approval.")
+        return {"answer": answer, "data_mode": "SIMULATED", "sources": ["platform database snapshot", "route planner"]}
     if any(w in q for w in ("blocked", "closed", "inaccessible")):
         value = ", ".join(facts["blocked"]) or "No blocked roads are recorded in the current demo snapshot."
         answer = f"Blocked corridors in the simulated dataset: {value}. Verify conditions with an authorized field officer before acting."

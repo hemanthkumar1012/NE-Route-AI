@@ -13,6 +13,8 @@ NE-Route AI is a decision-support prototype for visualizing simulated road disru
 - World-view Leaflet map with a region switcher (World / NE India / East Africa / Southeast Asia / Andes) that flies to each corridor network.
 - Multimodal intercontinental routing: synthetic humanitarian air bridges (Guwahati–Bangkok, Bangkok–Nairobi, Nairobi–Lima) and sea lanes (Mombasa–HCMC, Callao–Mombasa) connect the regional road graphs into one routable world network. Cross-region plans combine road, air and sea legs — e.g. Guwahati → Juba resolves to two air bridges plus the Nairobi–Kampala–Juba road corridors — and each route leg is labeled ROAD, AIR or SEA.
 - Map renders air bridges and sea lanes as dashed blue/cyan lines with mode-labeled popups and legend entries.
+- Cost- and carbon-aware planning: every route option reports synthetic freight cost (USD) and CO2 (kg) from per-mode factors, and a fourth GREENEST objective minimizes emissions — e.g. Guwahati → Nairobi resolves to an all-air plan in ~16 h or a sea-lane plan at ~70% lower CO2 and cost.
+- Agentic copilot route planning: questions like "fastest way to move medical kits from Guwahati to Juba" are detected, the named network nodes resolved, and the multimodal planner run as a copilot tool — the answer compares FASTEST / SAFEST / PRIORITY / GREENEST legs with ETA, cost, CO2 and risk, in both the Gemini-grounded and deterministic fallback paths.
 - White / light-red React + TypeScript command-center UI with a dedicated Predictive Risk Intelligence workspace.
 - FastAPI backend with JWT authentication and role checks.
 - PostgreSQL + PostGIS persistence for roads, incidents, vehicles, and report locations.
