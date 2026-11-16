@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 afterEach(cleanup);
@@ -32,8 +32,8 @@ function renderStudio(){
 describe('GlobalRouteStudio',()=>{
  it('renders grouped global locations and the route comparison metrics',()=>{
   renderStudio();
-  expect(screen.getByRole('group',{name:'East Africa'})).toBeInTheDocument();
-  expect(screen.getByRole('group',{name:'Southeast Asia'})).toBeInTheDocument();
+  expect(within(screen.getByLabelText('Origin location')).getByRole('group',{name:'East Africa'})).toBeInTheDocument();
+  expect(within(screen.getByLabelText('Destination location')).getByRole('group',{name:'Southeast Asia'})).toBeInTheDocument();
   expect(screen.getByText('Lowest emissions')).toBeInTheDocument();
   expect(screen.getByText('strategies available')).toBeInTheDocument();
   expect(screen.getAllByText(/kg CO₂/).length).toBeGreaterThan(0);
